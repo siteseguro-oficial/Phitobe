@@ -447,6 +447,36 @@ textarea.inp{min-height:110px;font-size:16px;font-family:ui-monospace,monospace}
 @media (min-width:520px){ body{background:#E9E4F6} #app{background:var(--bg);box-shadow:0 0 40px rgba(60,35,140,.08)} }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
 
+/* conta */
+.av{border-radius:50%;object-fit:cover;display:inline-grid;place-items:center;flex:none;background:linear-gradient(160deg,#8A70E6,#4B2FA8);color:#fff;font-weight:900}
+.av.big{box-shadow:0 8px 24px rgba(70,40,170,.25)}
+.topav{position:relative;border-radius:50%;padding:2px;background:#fff;box-shadow:var(--sh);display:grid;place-items:center}
+.topav.on{outline:2.5px solid var(--pri)}
+.topav .okdot{position:absolute;right:0;bottom:0;width:11px;height:11px;border-radius:50%;background:var(--ok);border:2px solid #fff}
+.avbtn{position:relative;display:inline-block;border-radius:50%}
+.avcam{position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center;font-size:14px;border:2.5px solid #fff}
+.acc-hero{margin:12px 18px;padding:18px;border-radius:24px;color:#fff;background:radial-gradient(120% 120% at 100% 0%,#8C6CF0 0%,#5434B8 45%,#2B1A6B 100%);box-shadow:var(--sh2)}
+.acc-hero b{font-size:20px;font-weight:900;display:block}
+.acc-hero ul{list-style:none;padding:0;margin:10px 0 16px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.acc-hero li .ic{color:var(--gold);margin-right:6px}
+.acc-hero .restore{color:#fff}
+.li .av{margin-right:0}
+
+/* campos de data e hora no iPhone (não passam da tela e mostram dica quando vazios) */
+input[type=date].inp,input[type=time].inp,input[type=datetime-local].inp{-webkit-appearance:none;appearance:none;display:block;width:100%;max-width:100%;min-width:0;min-height:52px;text-align:left;line-height:1.3}
+input[type=date].inp::-webkit-date-and-time-value,input[type=time].inp::-webkit-date-and-time-value,input[type=datetime-local].inp::-webkit-date-and-time-value{text-align:left;margin:0}
+input[type=date].inp::-webkit-calendar-picker-indicator{opacity:.6}
+.dwrap{position:relative;width:100%}
+.dwrap .dph{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#9A93B0;pointer-events:none;font-size:16px}
+.ob .dwrap{margin-top:20px}.ob .dwrap .inp{margin-top:0}
+.dwrap .dph{display:none}
+.ios .dwrap .inp:invalid+.dph{display:block}
+/* iPhone no Safari: espaço extra para não encostar na barra de status */
+.ios .ob{padding-top:calc(14px + max(var(--top),26px))}
+.ios .top{padding-top:calc(12px + max(var(--top),22px))}
+.ios .mg,.ios .nightm{padding-top:calc(14px + max(var(--top),26px))}
+.ios input[type=date].inp:invalid::-webkit-datetime-edit{color:transparent}
+
 </style>
 </head>
 <body>
@@ -473,6 +503,12 @@ const CUPOM = "";          /* cupom de recompra, ex.: "NOITE10". Vazio esconde o
 const CUPOM_PARAM = "";    /* nome do parâmetro de cupom no link do checkout, se existir (ex.: "coupon") */
 const UTM = {utm_source:"app_noite", utm_medium:"app", utm_campaign:"recompra"};
 const INDICACAO = {cupom:"", url:CHECKOUT_URL};  /* link para a mãe indicar a uma amiga */
+
+/* Conta (login e dados salvos na nuvem) com Firebase.
+   Vazio = o app funciona sem login, salvando só no celular. Veja o passo a passo no arquivo COMO-ATIVAR-CONTA.txt */
+const FIREBASE = {apiKey:"", authDomain:"", projectId:"", storageBucket:"", messagingSenderId:"", appId:""};
+const LOGIN_GOOGLE = true;   /* mostra o botão "Continuar com Google" */
+const FB_SDK = "https://www.gstatic.com/firebasejs/10.12.2/";
 
 /* Métricas e lembretes */
 const GA4_ID = "";            /* ex.: "G-XXXXXXX" */
@@ -842,10 +878,15 @@ function nightKey(t=Date.now()){ const d=new Date(t); if(d.getHours()<5) d.setDa
 
 /* estado */
 const KEY="noite_tranquila_v1";
-const blank=()=>({v:1,mae:"",bebe:"",nasc:"",dores:[],hora:"19:30",prods:{},ev:[],ativo:{},ritual:{},humor:{},resp:[],checkins:[],notif:false,lemb:{ritual:true,recompra:true,dicas:true},som:{vol:.6,timer:30},criado:Date.now(),onb:false});
+const blank=()=>({v:1,mae:"",bebe:"",nasc:"",dores:[],hora:"19:30",prods:{},ev:[],ativo:{},ritual:{},humor:{},resp:[],checkins:[],notif:false,lemb:{ritual:true,recompra:true,dicas:true},som:{vol:.6,timer:30},criado:Date.now(),onb:false,whats:"",sexo:"",fotoMae:"",fotoBebe:"",del:[],uid:"",email:""});
 let S;
 function load(){ try{ S=Object.assign(blank(),JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){ S=blank(); } }
-function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+/* cópia de segurança no IndexedDB: se o localStorage for apagado, os dados voltam sozinhos */
+function idb(){ return new Promise((ok,no)=>{ try{ const r=indexedDB.open("noite_tranquila",1); r.onupgradeneeded=()=>r.result.createObjectStore("kv"); r.onsuccess=()=>ok(r.result); r.onerror=()=>no(r.error); }catch(e){ no(e); } }); }
+let _idbT; function saveIDB(){ clearTimeout(_idbT); _idbT=setTimeout(()=>{ idb().then(db=>{ const tx=db.transaction("kv","readwrite"); tx.objectStore("kv").put(JSON.stringify(S),KEY); }).catch(()=>{}); },400); }
+function loadIDB(){ return idb().then(db=>new Promise(ok=>{ const r=db.transaction("kv").objectStore("kv").get(KEY); r.onsuccess=()=>ok(r.result||null); r.onerror=()=>ok(null); })).catch(()=>null); }
+function localSave(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} saveIDB(); }
+function save(){ S.salvo=Date.now(); localSave(); if(typeof cloudPush==="function") cloudPush(); }
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
 /* bebê */
@@ -993,7 +1034,8 @@ let tab="hoje", sub=null, dseg="hoje", OB=null, editing=null;
 
 function topbar(){ const u=urgentes().length;
   return `<div class="top"><div class="brand"><span class="logo">${LOGO}</span>${esc(APP_NAME)}</div>
-  <button class="topbtn press" data-tab="comprar" aria-label="Comprar">${ic("bag")}${u?'<span class="dot"></span>':""}</button></div>`; }
+  <div class="row" style="gap:10px"><button class="topbtn press" data-tab="comprar" aria-label="Comprar">${ic("bag")}${u?'<span class="dot"></span>':""}</button>
+  <button class="topav press ${tab==="conta"?"on":""}" data-tab="conta" aria-label="Minha conta">${avatar(S.fotoMae,S.mae||"M",38)}${FB_ON&&CL.user?'<span class="okdot"></span>':""}</button></div></div>`; }
 
 function nav(){ const it=[["hoje","home","Hoje"],["diario","diary","Diário"],["acalmar","moon","Acalmar"],["guias","book","Guias"],["mamae","heart","Mamãe"]];
   return `<nav class="nav">${it.map(([id,i,l])=>id==="acalmar"?`<button class="mid ${tab===id?"on":""}" data-tab="${id}"><span class="mb">${ic(i)}</span>${l}</button>`:`<button class="${tab===id?"on":""}" data-tab="${id}">${ic(i)}${l}</button>`).join("")}</nav>`; }
@@ -1042,8 +1084,8 @@ function miniProds(){ const o=owned(); if(!o.length) return "";
     return `<button class="mini press" data-goto="comprar"><div class="row" style="align-items:flex-end;gap:8px">${bottle(p.id,46)}<span class="pill ${e.urg?"warn":"ok"}">${e.acabou?"acabou":e.remDays+"d"}</span></div><b>${esc(p.nome)}</b><small>${e.futuro?"Começa "+fmtDate(S.prods[p.id].inicio):e.acabou?"Hora de repor":"até "+fmtDate(e.fim)}</small><div class="bar"><i style="width:${e.pct}%"></i></div></button>`; }).join("")}</div>`; }
 
 function hoje(){ const sem=semanaInfo(), dica=dicaHoje(), sg=sugestoes();
-  return `${topbar()}<div class="hello"><small>${saudacao()}, ${esc(primeiro(S.mae))}</small><h1>${esc(S.bebe||"Seu bebê")}</h1>${S.nasc?`<p>${esc(ageTxt())}</p>`:""}</div>
-  ${urgentes().map(stockCard).join("")}
+  return `${topbar()}<div class="hello row" style="gap:14px">${S.fotoBebe?`<button class="press" data-tab="conta" aria-label="Perfil do bebê">${avatar(S.fotoBebe,S.bebe,58)}</button>`:""}<div><small>${saudacao()}, ${esc(primeiro(S.mae))}</small><h1>${esc(S.bebe||"Seu bebê")}</h1>${S.nasc?`<p>${esc(ageTxt())}</p>`:""}</div></div>
+  ${urgentes().map(stockCard).join("")}${contaNudge()}
   ${noite()?ritualHero()+napCard():napCard()+ritualHero(true)}
   <div class="sec" style="margin-top:20px"><h2>Registrar</h2></div>${quickGrid()}
   ${sg.slice(0,1).map(upsCard).join("")}
@@ -1170,18 +1212,13 @@ function mamae(){ const h=S.humor[today()], b=badges(), on=b.filter(x=>x.on).len
   <div class="sec"><h2>Marcos</h2><span>${on} de ${b.length}</span></div>
   <div class="badges">${b.map(x=>`<div class="badge ${x.on?"on":""}"><div class="bi">${ic(x.e)}</div><b>${x.t}</b><small>${x.s}</small></div>`).join("")}</div>
   ${!isStandalone()?`<button class="addapp press" data-sheet="instalar"><span class="logo">${LOGO}</span><span class="grow"><b>Adicione o app ao celular</b><small>Na tela inicial, junto dos seus apps</small></span><span class="go">Adicionar</span></button>`:""}
-  <div class="sec"><h2>Ajustes</h2></div>
+  <div class="sec"><h2>Conta e ajustes</h2></div>
   <div class="list">
+   <button class="li press" data-tab="conta">${avatar(S.fotoMae,S.mae||"M",36)}<span><b>Minha conta</b><small>${FB_ON&&CL.user?"Salvo na sua conta":"Perfil, produtos e backup"}</small></span><span class="chev">${ic("right")}</span></button>
    <button class="li press" data-tab="comprar"><span class="lic">${ic("bag")}</span><span><b>Comprar e repor</b><small>Kits e seus produtos</small></span><span class="chev">${ic("right")}</span></button>
-   <button class="li press" data-sheet="produtos"><span class="lic">${ic("bottle")}</span><span><b>Meus produtos</b><small>${owned().length?owned().map(p=>p.nome).join(", "):"Nenhum cadastrado"}</small></span><span class="chev">${ic("right")}</span></button>
-   <button class="li press" data-sheet="dados"><span class="lic">${ic("baby")}</span><span><b>Dados e ritual</b><small>${esc(S.bebe||"Bebê")} · ritual às ${esc(S.hora)}</small></span><span class="chev">${ic("right")}</span></button>
-   ${ONESIGNAL_APP_ID?`<button class="li press" data-sheet="lembretes"><span class="lic">${ic("bell")}</span><span><b>Lembretes</b><small>${S.notif?"Ativados":"Ritual, recompra e dicas"}</small></span><span class="chev">${ic("right")}</span></button>`:""}
-   <button class="li press" data-sheet="backup"><span class="lic">${ic("download")}</span><span><b>Salvar ou restaurar dados</b><small>Para trocar de celular sem perder nada</small></span><span class="chev">${ic("right")}</span></button>
    ${WHATSAPP?`<a class="li press" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Olá! Vim pelo app "+APP_NAME+".")}" target="_blank" rel="noopener" data-track="suporte_whatsapp"><span class="lic">${ic("chat")}</span><span><b>Falar no WhatsApp</b><small>Tire dúvidas sobre os produtos</small></span><span class="chev">${ic("ext")}</span></a>`:""}
-   ${SUPORTE?`<a class="li press" href="mailto:${esc(SUPORTE)}"><span class="lic">${ic("mail")}</span><span><b>Suporte por e-mail</b><small>${esc(SUPORTE)}</small></span><span class="chev">${ic("ext")}</span></a>`:""}
-   <button class="li press" data-sheet="apagar"><span class="lic" style="background:var(--badb);color:var(--bad)">${ic("trash")}</span><span><b>Apagar meus dados</b><small>Recomeçar do zero</small></span><span class="chev">${ic("right")}</span></button>
   </div>
-  <p class="trust">${esc(APP_NAME)} · seus dados ficam só neste celular.<br>Este app não substitui o acompanhamento médico.</p>`; }
+  <p class="trust">Este app não substitui o acompanhamento médico.</p>`; }
 
 /* ---------- COMPRAR ---------- */
 function kitCard(k){ const de=kitDe(k), eco=de-k.preco, ids=Object.keys(k.itens);
@@ -1207,6 +1244,160 @@ function comprar(){ const o=owned(), es=o.map(p=>estoque(p.id)), urg=es.filter(e
   <button class="cta sm ghost press" style="margin:0 auto;display:flex" data-act="comprei">${ic("plus")} Já comprei: atualizar meus produtos</button>
   <p class="trust">Compra segura no site oficial ${esc(MARCA)}. Você será levada ao checkout.</p>`; }
 
+/* ===== conta: perfil, login (Firebase) e sincronização ===== */
+const FB_ON=!!(FIREBASE&&FIREBASE.apiKey&&FIREBASE.projectId);
+const CL={ready:false,user:null,st:"",last:0,busy:false};
+let fbAuth=null, fbDb=null;
+
+function loadScript(src){ return new Promise((ok,no)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=no; document.head.appendChild(s); }); }
+async function initCloud(){ if(!FB_ON) return;
+  try{ for(const f of ["firebase-app-compat.js","firebase-auth-compat.js","firebase-firestore-compat.js"]) await loadScript(FB_SDK+f);
+    firebase.initializeApp(FIREBASE); fbAuth=firebase.auth(); fbAuth.languageCode="pt"; fbDb=firebase.firestore();
+    fbAuth.onAuthStateChanged(async u=>{ CL.user=u; CL.ready=true; if(u){ await pullCloud(); } rerenderSoft(); });
+  }catch(e){ CL.ready=true; CL.st="erro"; rerenderSoft(); } }
+function rerenderSoft(){ if(sheetOpen&&!$("#sheet [data-acc]")) return; if(MG||NM.on) return; if(document.activeElement?.matches("input,textarea")) return; render(true); }
+
+/* mescla os dados da conta com os do celular (nada se perde) */
+function mergeS(r,l){ const o=Object.assign(blank(),l,r), del=new Set([...(r.del||[]),...(l.del||[])]);
+  o.del=[...del].slice(-3000);
+  const ev=new Map(); [...(l.ev||[]),...(r.ev||[])].forEach(e=>{ if(e&&!del.has(e.id)) ev.set(e.id,e); }); o.ev=[...ev.values()].sort((a,b)=>a.t0-b.t0);
+  o.ritual={...(l.ritual||{})}; for(const [k,v] of Object.entries(r.ritual||{})) o.ritual[k]=[...new Set([...(o.ritual[k]||[]),...v])];
+  o.humor={...(l.humor||{}),...(r.humor||{})};
+  o.resp=(r.resp||[]).length>=(l.resp||[]).length?(r.resp||[]):(l.resp||[]);
+  const ck=new Map(); [...(l.checkins||[]),...(r.checkins||[])].forEach(c=>ck.set(c.d,c)); o.checkins=[...ck.values()].sort((a,b)=>a.d<b.d?-1:1);
+  o.prods={...(l.prods||{}),...(r.prods||{})};
+  o.onb=!!(r.onb||l.onb);
+  if(!r.onb&&l.onb) ["mae","bebe","nasc","dores","hora","prods"].forEach(f=>o[f]=l[f]);
+  ["mae","bebe","nasc","fotoMae","fotoBebe","whats","sexo"].forEach(f=>{ if(!o[f]&&l[f]) o[f]=l[f]; });
+  o.maxSeq=Math.max(r.maxSeq||0,l.maxSeq||0); o.massagens=Math.max(r.massagens||0,l.massagens||0);
+  o.salvo=Math.max(r.salvo||0,l.salvo||0); return o; }
+
+async function pullCloud(){ if(!fbDb||!CL.user) return; CL.st="sync";
+  try{ const uid=CL.user.uid, snap=await fbDb.collection("maes").doc(uid).get();
+    if(snap.exists&&snap.data().dados){ const r=JSON.parse(snap.data().dados);
+      if(S.uid!==uid||(r.salvo||0)>(S.salvo||0)){ const wasOnb=S.onb; S=mergeS(r,S.uid&&S.uid!==uid?blank():S); S.uid=uid; S.email=CL.user.email||S.email; localSave(); if(!wasOnb&&S.onb){ OB=null; tab="hoje"; toast("Bem-vinda de volta! Seus dados foram recuperados"); } }
+      else if((S.salvo||0)>(r.salvo||0)) await pushCloud(true); }
+    else { S.uid=uid; S.email=CL.user.email||""; if(!S.mae&&CL.user.displayName) S.mae=CL.user.displayName; if(OB&&!OB.mae) OB.mae=S.mae||""; localSave(); await pushCloud(true); }
+    CL.st="ok"; CL.last=Date.now();
+  }catch(e){ CL.st="erro"; } }
+
+let _pushT=null;
+function cloudPush(){ if(!CL.user||!fbDb) return; clearTimeout(_pushT); _pushT=setTimeout(()=>pushCloud(),2500); }
+async function pushCloud(now){ if(!CL.user||!fbDb) return; clearTimeout(_pushT); CL.st="sync";
+  try{ const u=CL.user; await fbDb.collection("maes").doc(u.uid).set({dados:JSON.stringify(S),salvo:S.salvo||Date.now(),
+      email:u.email||"",nome:S.mae||"",whatsapp:S.whats||"",bebe:S.bebe||"",nascimento:S.nasc||"",produtos:owned().map(p=>p.id),
+      atualizado:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    CL.st="ok"; CL.last=Date.now(); }catch(e){ CL.st="erro"; }
+  const el=$("[data-clst]"); if(el) el.innerHTML=cloudStatus(); }
+addEventListener("pagehide",()=>{ if(_pushT) pushCloud(); });
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden"&&_pushT) pushCloud(); if(document.visibilityState==="visible"&&CL.user) pullCloud().then(()=>{ if(!sheetOpen&&!MG&&!NM.on) render(true); }); });
+
+function cloudStatus(){ if(!FB_ON) return "Salvo só neste celular";
+  if(!CL.ready) return "Conectando…"; if(!CL.user) return "Salvo só neste celular · crie sua conta";
+  return CL.st==="sync"?"Sincronizando…":CL.st==="erro"?"Sem conexão · salvo no celular, sincroniza depois":"Salvo na sua conta"+(CL.last?" · "+hm(CL.last):""); }
+
+/* erros em português */
+function authErr(e){ const c=(e&&e.code)||""; return ({
+  "auth/email-already-in-use":"Este e-mail já tem conta. Toque em “Já tenho conta”.","auth/invalid-email":"E-mail inválido.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.",
+  "auth/wrong-password":"E-mail ou senha incorretos.","auth/invalid-credential":"E-mail ou senha incorretos.","auth/invalid-login-credentials":"E-mail ou senha incorretos.","auth/user-not-found":"Não achamos conta com este e-mail.",
+  "auth/too-many-requests":"Muitas tentativas. Espere alguns minutos.","auth/network-request-failed":"Sem internet. Tente de novo.",
+  "auth/popup-closed-by-user":"Login cancelado.","auth/popup-blocked":"O celular bloqueou a janela do Google. Tente entrar com e-mail e senha.",
+  "auth/operation-not-supported-in-this-environment":"Entrar com Google não funciona aqui. Use e-mail e senha.","auth/unauthorized-domain":"Este endereço ainda não foi liberado no Firebase (Authentication › Settings › Authorized domains).",
+  "auth/operation-not-allowed":"Este tipo de login não está ativado no Firebase.","auth/requires-recent-login":"Por segurança, saia e entre de novo antes de apagar a conta."
+  })[c]||"Não deu certo agora. Tente de novo."; }
+
+/* ---------- tela Conta ---------- */
+function avatar(src,txt,size=44,cls=""){ return src?`<img class="av ${cls}" src="${src}" alt="" style="width:${size}px;height:${size}px">`:`<span class="av ${cls}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.42)}px">${esc((txt||"?").trim().charAt(0).toUpperCase()||"?")}</span>`; }
+function accountCard(){
+  if(!FB_ON) return `<div class="card"><div class="row"><span class="nap-ic">${ic("shield")}</span><div class="grow"><b>Seus dados ficam neste celular</b><div class="muted small">Para trocar de aparelho sem perder nada, salve o código de backup.</div></div></div><button class="cta ghost press" style="margin-top:12px" data-sheet="backup">${ic("download")} Salvar ou restaurar dados</button></div>`;
+  if(!CL.ready) return `<div class="card"><div class="muted">Conectando à sua conta…</div></div>`;
+  if(!CL.user) return `<div class="acc-hero"><b>Crie sua conta grátis</b><ul><li>${ic("check")} Não perde nada se trocar de celular</li><li>${ic("check")} Use no seu celular e no do papai</li><li>${ic("check")} Tudo volta se apagar o app</li></ul>
+    ${LOGIN_GOOGLE?`<button class="cta white press" data-acc="google">${GLOGO} Continuar com Google</button>`:""}
+    <button class="cta green press" style="margin-top:10px" data-acc="criar">${ic("mail")} Criar conta com e-mail</button>
+    <button class="restore press" data-acc="entrar">Já tenho conta: entrar</button></div>`;
+  return `<div class="card"><div class="row"><span class="nap-ic" style="background:var(--okb);color:var(--ok)">${ic("shield")}</span><div class="grow"><b>Conta conectada</b><div class="muted small">${esc(CL.user.email||"")}</div><div class="small" data-clst style="color:var(--ok);font-weight:800;margin-top:2px">${cloudStatus()}</div></div></div>
+    <button class="cta ghost press" style="margin-top:12px" data-acc="sync">${ic("upload")} Sincronizar agora</button></div>`; }
+function conta(){ const nome=S.mae||"Mamãe";
+  return `${topbar()}<div class="ptop"><div><h1>Conta</h1><p>Seu perfil, o de ${esc(bebe())} e onde seus dados ficam salvos.</p></div></div>
+  <div class="card" style="text-align:center;padding:22px 16px">
+    <button class="avbtn press" data-foto="fotoMae" aria-label="Trocar sua foto">${avatar(S.fotoMae,nome,88,"big")}<span class="avcam">${ic("edit")}</span></button>
+    <h2 style="font-size:21px;font-weight:900;margin-top:10px">${esc(nome)}</h2><div class="muted small" data-clst>${cloudStatus()}</div></div>
+  ${accountCard()}
+  <div class="sec"><h2>Seu perfil</h2></div>
+  <div class="card">
+    <div class="field" style="margin-top:0"><label for="pf-mae">Seu nome</label><input id="pf-mae" class="inp" value="${esc(S.mae)}" maxlength="40" autocomplete="name"></div>
+    <div class="field"><label for="pf-whats">WhatsApp (opcional)</label><input id="pf-whats" class="inp" type="tel" inputmode="tel" value="${esc(S.whats||"")}" placeholder="(11) 99999-9999" maxlength="20" autocomplete="tel"></div>
+  </div>
+  <div class="sec"><h2>Perfil de ${esc(primeiro(S.bebe)||"seu bebê")}</h2></div>
+  <div class="card">
+    <div class="row" style="gap:14px"><button class="avbtn press" data-foto="fotoBebe" aria-label="Trocar a foto do bebê">${avatar(S.fotoBebe,S.bebe||"B",68)}<span class="avcam">${ic("edit")}</span></button><div class="grow muted small">Toque na foto para trocar. Ela aparece na tela inicial.</div></div>
+    <div class="field"><label for="pf-bebe">Nome do bebê</label><input id="pf-bebe" class="inp" value="${esc(S.bebe)}" maxlength="40"></div>
+    <div class="field"><label for="pf-nasc">Nascimento</label><div class="dwrap"><input id="pf-nasc" class="inp" type="date" required max="${today()}" value="${esc(S.nasc)}"><span class="dph">Toque para escolher</span></div></div>
+    <div class="field"><label>É</label><div class="tchips">${[["menina","Menina"],["menino","Menino"],["nd","Prefiro não dizer"]].map(([v,l])=>`<button class="tchip ${(S.sexo||"nd")===v?"on":""}" data-pick="${v}" data-grpx="sexo">${l}</button>`).join("")}</div></div>
+    <div class="field"><label for="pf-hora">Horário do ritual da noite</label><input id="pf-hora" class="inp" type="time" value="${esc(S.hora)}"></div>
+    <div class="field"><label>Desafios</label><div class="tchips">${DORES.map(([k,,t])=>`<button class="tchip ${S.dores.includes(k)?"on":""}" data-ddor="${k}">${t}</button>`).join("")}</div></div>
+    <button class="cta press" data-acc="perfil" style="margin-top:6px">Salvar perfil</button>
+  </div>
+  <div class="sec"><h2>Ajustes</h2></div>
+  <div class="list">
+   <button class="li press" data-sheet="produtos"><span class="lic">${ic("bottle")}</span><span><b>Meus produtos</b><small>${owned().length?owned().map(p=>p.nome).join(", "):"Nenhum cadastrado"}</small></span><span class="chev">${ic("right")}</span></button>
+   <button class="li press" data-tab="comprar"><span class="lic">${ic("bag")}</span><span><b>Comprar e repor</b><small>Kits e seus produtos</small></span><span class="chev">${ic("right")}</span></button>
+   ${ONESIGNAL_APP_ID?`<button class="li press" data-sheet="lembretes"><span class="lic">${ic("bell")}</span><span><b>Lembretes</b><small>${S.notif?"Ativados":"Ritual, recompra e dicas"}</small></span><span class="chev">${ic("right")}</span></button>`:""}
+   ${!isStandalone()?`<button class="li press" data-sheet="instalar"><span class="lic">${ic("addhome")}</span><span><b>Instalar o app</b><small>Adicionar à tela inicial</small></span><span class="chev">${ic("right")}</span></button>`:""}
+   <button class="li press" data-sheet="backup"><span class="lic">${ic("download")}</span><span><b>Código de backup</b><small>Copiar ou restaurar sem conta</small></span><span class="chev">${ic("right")}</span></button>
+   ${WHATSAPP?`<a class="li press" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Olá! Vim pelo app "+APP_NAME+".")}" target="_blank" rel="noopener" data-track="suporte_whatsapp"><span class="lic">${ic("chat")}</span><span><b>Falar no WhatsApp</b><small>Tire dúvidas sobre os produtos</small></span><span class="chev">${ic("ext")}</span></a>`:""}
+   ${SUPORTE?`<a class="li press" href="mailto:${esc(SUPORTE)}"><span class="lic">${ic("mail")}</span><span><b>Suporte por e-mail</b><small>${esc(SUPORTE)}</small></span><span class="chev">${ic("ext")}</span></a>`:""}
+   ${CL.user?`<button class="li press" data-acc="sair"><span class="lic">${ic("x")}</span><span><b>Sair da conta</b><small>Seus dados continuam salvos na conta</small></span><span class="chev">${ic("right")}</span></button>`:""}
+   <button class="li press" data-sheet="apagar"><span class="lic" style="background:var(--badb);color:var(--bad)">${ic("trash")}</span><span><b>${CL.user?"Apagar minha conta":"Apagar meus dados"}</b><small>${CL.user?"Remove a conta e todos os dados":"Recomeçar do zero"}</small></span><span class="chev">${ic("right")}</span></button>
+  </div>
+  <p class="trust">${esc(APP_NAME)} · ${CL.user?"seus dados ficam salvos na sua conta e neste celular":"seus dados ficam neste celular"}.<br>Este app não substitui o acompanhamento médico.</p>`; }
+
+/* card na tela Hoje convidando a criar conta */
+function contaNudge(){ if(!FB_ON||!CL.ready||CL.user||S.nudgeOff) return "";
+  return `<div class="card" style="border:1.5px solid #CBBDF3"><div class="row"><span class="nap-ic">${ic("shield")}</span><div class="grow"><b>Não perca o que você registrou</b><div class="muted small">Crie sua conta grátis e use em qualquer celular.</div></div><button class="del" data-acc="nudgeoff" aria-label="Fechar">${ic("x")}</button></div><button class="cta sm press" style="margin-top:10px;width:100%" data-tab="conta">Criar minha conta</button></div>`; }
+
+/* ---------- folhas de login ---------- */
+function sheetAuth(mode){ const pw=`<div class="field"><label for="au-pw">Senha</label><input id="au-pw" class="inp" type="password" autocomplete="${mode==="criar"?"new-password":"current-password"}" minlength="6" placeholder="${mode==="criar"?"Mínimo de 6 caracteres":"Sua senha"}"></div>`;
+  const em=`<div class="field" style="margin-top:4px"><label for="au-em">E-mail</label><input id="au-em" class="inp" type="email" inputmode="email" autocomplete="email" autocapitalize="off" value="${esc(S.email||"")}" placeholder="seu@email.com"></div>`;
+  const g=LOGIN_GOOGLE&&mode!=="reset"?`<button class="cta white press" style="border:1.5px solid var(--line);margin-bottom:6px" data-acc="google">${GLOGO} Continuar com Google</button><p class="muted small" style="text-align:center;margin:8px 0 2px">ou com e-mail</p>`:"";
+  const err=`<p class="small" data-auerr style="color:var(--bad);font-weight:800;min-height:1px;margin:4px 0 0"></p>`;
+  if(mode==="criar") openSheet(sh("Criar sua conta","Grátis. Seus registros ficam salvos e você usa em qualquer celular.",g+em+pw+err+`<button class="cta green press" data-acc="do-criar">Criar conta</button><button class="restore press" style="color:var(--pri)" data-acc="entrar">Já tenho conta: entrar</button><p class="muted small" style="text-align:center;margin-top:10px">Ao criar a conta, você concorda em salvar seus dados para usar o app em qualquer celular.</p>`));
+  if(mode==="entrar") openSheet(sh("Entrar na conta","Seus dados voltam para este celular.",g+em+pw+err+`<button class="cta press" data-acc="do-entrar">Entrar</button><button class="restore press" style="color:var(--pri)" data-acc="reset">Esqueci minha senha</button><button class="restore press" style="color:var(--pri);margin-top:6px" data-acc="criar">Ainda não tenho conta</button>`));
+  if(mode==="reset") openSheet(sh("Esqueci minha senha","Enviamos um link para você criar uma nova senha.",em+err+`<button class="cta press" data-acc="do-reset">Enviar link</button><button class="restore press" style="color:var(--pri)" data-acc="entrar">Voltar</button>`));
+  setTimeout(()=>{ const i=$("#au-em"); if(i&&!i.value) i.focus(); },300); }
+function auErr(m){ const e=$("[data-auerr]"); if(e) e.textContent=m; else toast(m); }
+async function authDo(kind){ if(!fbAuth) return toast("Conectando… tente em instantes"); if(CL.busy) return; const em=($("#au-em")?.value||"").trim(), pw=$("#au-pw")?.value||"";
+  if(kind!=="google"&&!/^\S+@\S+\.\S+$/.test(em)) return auErr("Digite um e-mail válido.");
+  if((kind==="criar"||kind==="entrar")&&pw.length<6) return auErr("A senha precisa ter pelo menos 6 caracteres.");
+  CL.busy=true; const b=$(`[data-acc="do-${kind}"]`); if(b){ b.disabled=true; b.dataset.t=b.textContent; b.textContent="Aguarde…"; }
+  try{ if(kind==="criar"){ await fbAuth.createUserWithEmailAndPassword(em,pw); track("conta_criada",{metodo:"email"}); closeSheet(); toast("Conta criada. Tudo salvo! 💜"); }
+    else if(kind==="entrar"){ await fbAuth.signInWithEmailAndPassword(em,pw); track("conta_login",{metodo:"email"}); closeSheet(); toast("Você entrou na sua conta"); }
+    else if(kind==="reset"){ await fbAuth.sendPasswordResetEmail(em); closeSheet(); toast("Link enviado. Confira seu e-mail (e o spam)"); }
+    else if(kind==="google"){ await fbAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); track("conta_login",{metodo:"google"}); closeSheet(); toast("Você entrou com o Google"); }
+  }catch(e){ auErr(authErr(e)); if(kind==="google"&&!sheetOpen) toast(authErr(e)); }
+  CL.busy=false; if(b&&b.isConnected){ b.disabled=false; b.textContent=b.dataset.t; } }
+async function sairConta(){ try{ await pushCloud(true); await fbAuth.signOut(); }catch(e){}
+  try{ localStorage.removeItem(KEY); localStorage.removeItem("noite_ui_v1"); indexedDB.deleteDatabase("noite_tranquila"); }catch(e){}
+  stopSom(); load(); OB=null; tab="hoje"; closeSheet(); render(); toast("Você saiu da conta"); }
+async function apagarConta(){ try{ if(CL.user){ const uid=CL.user.uid; await fbDb.collection("maes").doc(uid).delete(); await CL.user.delete(); } }
+  catch(e){ toast(authErr(e)); return; }
+  try{ localStorage.removeItem(KEY); localStorage.removeItem("noite_ui_v1"); indexedDB.deleteDatabase("noite_tranquila"); }catch(e){}
+  stopSom(); load(); OB=null; tab="hoje"; closeSheet(); render(); toast("Conta e dados apagados"); }
+function perfilSave(){ const m=$("#pf-mae").value.trim(), b=$("#pf-bebe").value.trim(), n=$("#pf-nasc").value, h=$("#pf-hora").value;
+  if(!m||!b||!n) return toast("Preencha seu nome, o do bebê e o nascimento");
+  S.mae=m; S.whats=$("#pf-whats").value.trim(); S.bebe=b; S.nasc=n; if(h) S.hora=h; { const v=$('[data-grpx="sexo"].on')?.dataset.pick||"nd"; S.sexo=v==="nd"?"":v; }
+  S.dores=$$("[data-ddor].on").map(x=>x.dataset.ddor); save(); toast("Perfil salvo"); render(true); syncTags(); }
+
+/* foto: reduz no próprio celular antes de salvar */
+function pickFoto(campo){ const i=document.createElement("input"); i.type="file"; i.accept="image/*";
+  i.onchange=()=>{ const f=i.files&&i.files[0]; if(!f) return; const url=URL.createObjectURL(f), img=new Image();
+    img.onload=()=>{ const s=Math.min(img.width,img.height), c=document.createElement("canvas"); c.width=c.height=320; const x=c.getContext("2d");
+      x.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,320,320); S[campo]=c.toDataURL("image/jpeg",.8); URL.revokeObjectURL(url); save(); render(true); toast("Foto atualizada"); };
+    img.onerror=()=>toast("Não deu para abrir essa foto"); img.src=url; };
+  i.click(); }
+
+const GLOGO=`<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.2l7.8 6.1C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C1 16.5 0 20.1 0 24s1 7.5 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.7-4.1-13.6-9.8l-7.8 6.1C6.6 42.6 14.6 48 24 48z"/></svg>`;
+
 /* ===== primeiro acesso ===== */
 const DORES=[["sono","moon","Sono","Acorda muito ou demora a dormir"],["colica","tummy","Cólica e gases","Choro com barriga dura"],["refluxo","drop","Refluxo","Golfadas e desconforto"],["nariz","wind","Nariz entupido","Resfriado e catarro"],["choro","cry","Choro difícil","Não sei mais o que fazer"],["mae","heart","Meu cansaço","Preciso de uma pausa"]];
 const HORAS=["18:30","19:00","19:30","20:00","20:30","21:00"];
@@ -1221,18 +1412,18 @@ function onboarding(){ if(!OB) obStart(); const o=OB, st=o.step, first=primeiro(
     <p class="ob-sub" style="text-align:center">Ritual da noite, sons para dormir, massagens guiadas e um diário do bebê. É grátis.</p>
     <div class="wfeat"><span>${ic("moon")} Ritual</span><span>${ic("music")} Sons</span><span>${ic("hands")} Massagens</span><span>${ic("diary")} Diário</span></div>
     <div class="ob-foot"><button class="cta press" data-obnext style="font-size:17px;padding:17px">ABRIR O APP AGORA</button>
-    <p class="ob-sub" style="text-align:center;font-size:13.5px;margin:12px 0 0">Dica: abra pelo celular e toque em “Adicionar à tela inicial”.${isStandalone()?"":` <button class="wlink" data-sheet="instalar">Ver como</button>`}</p></div>`;
+    ${FB_ON?`<button class="restore press" data-acc="entrar">Já tenho conta: entrar</button>`:isStandalone()?`<button class="restore press" data-sheet="backup">Já começou pelo navegador? Restaurar meus dados</button>`:`<p class="ob-sub" style="text-align:center;font-size:13.5px;margin:12px 0 0">Dica: abra pelo celular e toque em “Adicionar à tela inicial”. <button class="wlink" data-sheet="instalar">Ver como</button></p>`}</div>`;
   if(st===1) b=`<div class="applogo small">${LOGO}</div><h1 class="ob-title">Vamos preparar noites mais tranquilas.</h1><p class="ob-sub">Primeiro, como podemos te chamar?</p>
     <input id="ob-mae" class="inp" type="text" autocomplete="given-name" autocapitalize="words" placeholder="Seu nome" maxlength="24" value="${esc(o.mae)}" enterkeyhint="next">
-    <div class="ob-foot"><button class="cta press" data-obnext ${obValid()?"":"disabled"}>Continuar</button><button class="restore press" data-sheet="backup">Já usa o ${esc(APP_NAME)}? Restaurar meus dados</button></div>`;
+    <div class="ob-foot"><button class="cta press" data-obnext ${obValid()?"":"disabled"}>Continuar</button>${FB_ON?`<button class="restore press" data-acc="entrar">Já tenho conta: entrar</button>`:`<button class="restore press" data-sheet="backup">Já usa o ${esc(APP_NAME)}? Restaurar meus dados</button>`}</div>`;
   if(st===2) b=`<h1 class="ob-title">Prazer, ${esc(first)}! E o seu bebê?</h1><p class="ob-sub">Com a data de nascimento, o app ajusta janelas de sono e dicas para cada semana.</p>
     <label class="l" for="ob-bebe">Nome do bebê</label><input id="ob-bebe" class="inp" type="text" autocapitalize="words" placeholder="Nome do bebê" maxlength="24" value="${esc(o.bebe)}">
-    <label class="l" for="ob-nasc">Data de nascimento</label><input id="ob-nasc" class="inp" type="date" max="${today()}" min="${addDays(today(),-1100)}" value="${esc(o.nasc)}">
+    <label class="l" for="ob-nasc">Data de nascimento</label><div class="dwrap"><input id="ob-nasc" class="inp" type="date" required max="${today()}" min="${addDays(today(),-1100)}" value="${esc(o.nasc)}"><span class="dph">Toque para escolher a data</span></div>
     <div class="ob-foot"><button class="cta press" data-obnext ${obValid()?"":"disabled"}>Continuar</button></div>`;
   if(st===3){ const any=Object.values(o.prods).some(n=>n>0);
     b=`<h1 class="ob-title">Quais produtos ${esc(MARCA)} você tem?</h1><p class="ob-sub">Assim o app guia o uso de cada um e avisa antes de acabar.</p>
     <div class="opts">${PRODUTOS.map(p=>{ const n=o.prods[p.id]; return `<div class="pq ${n?"on":""}">${bottle(p.id,52)}<div class="grow"><b>${esc(p.nome)}</b><small>${p.para==="mae"?"Para você":"Para o bebê"}</small></div><div class="stp"><button class="press" data-pq="${p.id}" data-d="-1" aria-label="Menos">${ic("minus")}</button><span>${n}</span><button class="press" data-pq="${p.id}" data-d="1" aria-label="Mais">${ic("plus")}</button></div></div>`; }).join("")}</div>
-    ${any?`<p class="ob-sub" style="margin-top:18px;font-weight:800">Quando começou (ou vai começar) a usar?</p><div class="segw">${[["hoje","Hoje"],["ontem","Ontem"],["data","Outra data"]].map(([k,l])=>`<button class="press ${o.ini===k?"on":""}" data-ini="${k}">${l}</button>`).join("")}</div>${o.ini==="data"?`<input id="ob-ini" class="inp" type="date" value="${esc(o.iniData)}" style="margin-top:12px">`:""}`:""}
+    ${any?`<p class="ob-sub" style="margin-top:18px;font-weight:800">Quando começou (ou vai começar) a usar?</p><div class="segw">${[["hoje","Hoje"],["ontem","Ontem"],["data","Outra data"]].map(([k,l])=>`<button class="press ${o.ini===k?"on":""}" data-ini="${k}">${l}</button>`).join("")}</div>${o.ini==="data"?`<div class="dwrap" style="margin-top:12px"><input id="ob-ini" class="inp" type="date" required value="${esc(o.iniData)}"><span class="dph">Toque para escolher a data</span></div>`:""}`:""}
     <div class="ob-foot"><button class="cta press" data-obnext>${any?"Continuar":"Ainda não tenho, continuar"}</button></div>`; }
   if(st===4) b=`<h1 class="ob-title">Qual é o maior desafio agora, ${esc(first)}?</h1><p class="ob-sub">Pode escolher mais de um.</p>
     <div class="opts">${DORES.map(([k,i,t,s])=>`<button class="opt press ${o.dores.includes(k)?"on":""}" data-dor="${k}"><span class="oi">${ic(i)}</span><span>${t}<small>${s}</small></span><span class="ck">${o.dores.includes(k)?ic("check"):""}</span></button>`).join("")}</div>
@@ -1268,12 +1459,12 @@ const app=$("#app");
 
 /* ---------- render ---------- */
 function render(keepScroll){ const y=scrollY;
-  if(!S.onb){ app.classList.add("noNav"); app.innerHTML=onboarding(); updatePlayer(); return; }
+  if(!S.onb){ app.classList.add("noNav"); app.innerHTML=inAppBanner()+onboarding(); updatePlayer(); saveUI(); return; }
   app.classList.toggle("noNav",tab==="comprar");
-  const v={hoje,diario,acalmar,guias,mamae,comprar}[tab]||hoje;
+  const v={hoje,diario,acalmar,guias,mamae,comprar,conta}[tab]||hoje;
   app.innerHTML=v()+(tab==="comprar"?"":nav());
   if(keepScroll===true) scrollTo(0,y);
-  updatePlayer(); }
+  updatePlayer(); saveUI(); }
 function go(t,s=null){ tab=t; sub=s; const run=()=>{ render(); scrollTo(0,0); if(s==="semanas") setTimeout(()=>{ const c=$("#semcur"); c&&c.scrollIntoView({block:"center"}); },60); };
   if(document.startViewTransition&&!reduce){ try{ document.startViewTransition(run); return; }catch(e){} } run(); if(t==="comprar") track("view_comprar"); }
 
@@ -1314,7 +1505,7 @@ const PL={id:null,playing:false,until:0};
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 function playSom(id){ if(PL.id===id&&PL.playing){ stopSom(); return; }
   const s=SONS.find(x=>x.id===id); if(!s) return;
-  PL.id=id; PL.playing=true; PL.until=S.som.timer?Date.now()+S.som.timer*MIN:0; AU.volume=S.som.vol; AU.loop=true;
+  PL.id=id; PL.playing=true; PL.resume=false; PL.until=S.som.timer?Date.now()+S.som.timer*MIN:0; AU.volume=S.som.vol; AU.loop=true;
   const fail=()=>{ PL.playing=false; PL.loading=false; toast("Toque de novo para tocar o som"); updatePlayer(); refreshSons(); renderNight(); };
   const start=url=>{ if(AU.src!==url) AU.src=url; try{ AU.currentTime=0; }catch(e){} const pr=AU.play(); if(pr) pr.catch(fail); };
   if(SOM_URL[id]) start(SOM_URL[id]);
@@ -1324,11 +1515,11 @@ function playSom(id){ if(PL.id===id&&PL.playing){ stopSom(); return; }
       if(!url) return fail(); if(PL.id===id&&PL.playing) start(url); updatePlayer(); },60); }
   if("mediaSession" in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:s.nome,artist:APP_NAME,artwork:[{src:ICON512,sizes:"512x512",type:"image/png"}]}); navigator.mediaSession.setActionHandler("pause",stopSom); navigator.mediaSession.setActionHandler("stop",stopSom); }catch(e){} }
   track("som_play",{som:id}); refreshSons(); updatePlayer(); renderNight(); }
-function stopSom(){ AU.pause(); PL.playing=false; PL.until=0; AU.volume=S.som.vol; refreshSons(); updatePlayer(); renderNight(); }
+function stopSom(){ AU.pause(); PL.playing=false; PL.resume=false; PL.until=0; AU.volume=S.som.vol; refreshSons(); updatePlayer(); renderNight(); }
 function refreshSons(){ if(S.onb&&tab==="acalmar") render(true); }
-function updatePlayer(){ const el=$("#player"), on=PL.playing&&S.onb; document.body.classList.toggle("hasPlayer",on); if(!on){ el.classList.add("hide"); return; }
+function updatePlayer(){ const el=$("#player"), on=(PL.playing||PL.resume)&&S.onb&&!!PL.id; document.body.classList.toggle("hasPlayer",on); if(!on){ el.classList.add("hide"); return; }
   const s=SONS.find(x=>x.id===PL.id); el.classList.remove("hide");
-  el.innerHTML=`<span class="pi">${ic(s.ic)}</span><div class="grow"><b>${esc(s.nome)}</b><small data-pltime>${PL.loading?"preparando…":PL.until?"desliga em "+clock(PL.until-Date.now()):"tocando sem parar"}</small></div><button class="pb press" data-tab="acalmar" aria-label="Opções">${ic("sliders")}</button><button class="pb press" data-stopsom aria-label="Parar">${ic("stop")}</button>`;
+  el.innerHTML=`<span class="pi">${ic(s.ic)}</span><div class="grow"><b>${esc(s.nome)}</b><small data-pltime>${!PL.playing?"parou quando o app fechou · toque para continuar":PL.loading?"preparando…":PL.until?"desliga em "+clock(PL.until-Date.now()):"tocando sem parar"}</small></div><button class="pb press" data-tab="acalmar" aria-label="Opções">${ic("sliders")}</button>${PL.playing?`<button class="pb press" data-stopsom aria-label="Parar">${ic("stop")}</button>`:`<button class="pb press" data-som="${s.id}" aria-label="Tocar" style="background:var(--gold);color:#3A2470">${ic("play")}</button><button class="pb press" data-stopsom aria-label="Fechar">${ic("x")}</button>`}`;
   el.style.bottom=(tab==="comprar"||!S.onb)?"calc(env(safe-area-inset-bottom,0px) + 12px)":""; }
 function setTimer(t){ S.som.timer=t; save(); if(PL.playing) PL.until=t?Date.now()+t*MIN:0; render(true); toast(t?`O som desliga em ${t} min`:"O som vai tocar sem parar"); }
 
@@ -1450,11 +1641,11 @@ function sheetBackup(){ const code=btoa(unescape(encodeURIComponent(JSON.stringi
   ${S.onb?`<div class="field"><label>Seu código</label><textarea class="inp" readonly id="bk-out">${code}</textarea></div><button class="cta ghost press" data-copy-from="bk-out">${ic("copy")} Copiar código</button>`:""}
   <div class="field" style="margin-top:22px"><label for="bk-in">Restaurar de outro celular</label><textarea class="inp" id="bk-in" placeholder="Cole aqui o código"></textarea></div><button class="cta press" data-restore>${ic("upload")} Restaurar</button>`)); }
 function restore(){ try{ const o=JSON.parse(decodeURIComponent(escape(atob($("#bk-in").value.trim())))); if(!o||typeof o!=="object"||!("ev" in o)) throw 0; S=Object.assign(blank(),o); S.onb=true; save(); closeSheet(); OB=null; tab="hoje"; render(); toast("Dados restaurados"); }catch(e){ toast("Código inválido. Confira e tente de novo"); } }
-function sheetApagar(){ openSheet(sh("Apagar tudo?","Todos os registros, produtos e configurações deste celular serão apagados. Não dá para desfazer.",`<div class="btns"><button class="tb press" data-close>Cancelar</button><button class="tb stop press" data-wipe>Apagar tudo</button></div>`)); }
+function sheetApagar(){ openSheet(sh(FB_ON&&CL.user?"Apagar sua conta?":"Apagar tudo?",FB_ON&&CL.user?"A conta e todos os registros, produtos e fotos serão apagados de todos os celulares. Não dá para desfazer.":"Todos os registros, produtos e configurações deste celular serão apagados. Não dá para desfazer.",`<div class="btns"><button class="tb press" data-close>Cancelar</button><button class="tb stop press" data-wipe>Apagar tudo</button></div>`)); }
 function sheetInstalar(){ const a=/android/i.test(navigator.userAgent);
   openSheet(sh("Adicione à tela inicial","Assim o "+esc(APP_NAME)+" abre como um app, em tela cheia, e funciona até sem internet.",
   (deferredPrompt?`<button class="cta green press" data-install>${ic("addhome")} Instalar agora</button><p class="muted small" style="text-align:center">ou siga os passos:</p>`:"")+
-  (isIOS||!a?`<b>No iPhone (Safari)</b><div class="phone"><span class="n">1</span><p>Toque no botão <b>Compartilhar</b> (quadrado com a seta para cima), na barra de baixo.</p></div><div class="phone"><span class="n">2</span><p>Role e toque em <b>Adicionar à Tela de Início</b>.</p></div><div class="phone"><span class="n">3</span><p>Toque em <b>Adicionar</b>. Pronto: o ícone da lua aparece junto dos seus apps.</p></div>`:"")+
+  (isIOS||!a?`<b>No iPhone (Safari)</b><div class="phone"><span class="n">1</span><p>Toque no botão <b>Compartilhar</b> (quadrado com a seta para cima), na barra de baixo.</p></div><div class="phone"><span class="n">2</span><p>Role e toque em <b>Adicionar à Tela de Início</b>.</p></div><div class="phone"><span class="n">3</span><p>Toque em <b>Adicionar</b>. Pronto: o ícone da lua aparece junto dos seus apps.</p></div>${S.onb&&isIOS&&!isStandalone()?`<div class="card care" style="margin:10px 0 4px"><b>Importante no iPhone</b><p class="muted small" style="margin:4px 0 10px">O app do ícone começa do zero: o iPhone não leva os dados do Safari. Copie seu código agora e, no app do ícone, toque em “Restaurar meus dados”.</p><button class="cta sm press" data-copy-from="bk-hidden">${ic("copy")} Copiar meu código</button><textarea id="bk-hidden" class="hide">${btoa(unescape(encodeURIComponent(JSON.stringify(S))))}</textarea></div>`:""}<p class="small muted" style="margin:6px 0 0">Depois de instalar, abra sempre pelo ícone.</p>`:"")+
   (!isIOS?`<b style="display:block;margin-top:14px">No Android (Chrome)</b><div class="phone"><span class="n">1</span><p>Toque nos <b>três pontinhos</b> no canto de cima.</p></div><div class="phone"><span class="n">2</span><p>Toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</p></div><div class="phone"><span class="n">3</span><p>Confirme. O ícone aparece na tela do celular.</p></div>`:""))); S.askedInstall=true; save(); }
 function sheetLembretes(){ const L=S.lemb;
   openSheet(sh("Lembretes","Escolha o que você quer receber no celular.",`
@@ -1513,6 +1704,14 @@ function enableNotif(){ if(!ONESIGNAL_APP_ID) return; OneSignalDeferred.push(asy
 document.addEventListener("click",e=>{ const t=e.target.closest("button,a,[data-go]"); if(!t) return; const d=t.dataset;
   if(t.closest("#night")&&d.n) return nightAct(d.n);
   if(d.mg) return mgAct(d.mg);
+  if(d.acc){ const a=d.acc;
+    if(a==="criar"||a==="entrar"||a==="reset") return sheetAuth(a);
+    if(a.startsWith("do-")) return authDo(a.slice(3)); if(a==="google") return authDo("google");
+    if(a==="sync"){ toast("Sincronizando…"); return pullCloud().then(()=>pushCloud(true)).then(()=>{ render(true); toast(CL.st==="ok"?"Tudo sincronizado":"Sem conexão agora"); }); }
+    if(a==="perfil") return perfilSave(); if(a==="nudgeoff"){ S.nudgeOff=true; save(); return render(true); }
+    if(a==="sair") return openSheet(sh("Sair da conta?","Seus dados continuam salvos na conta. Neste celular, o app volta ao início até você entrar de novo.",`<div class="btns"><button class="tb press" data-close>Cancelar</button><button class="tb stop press" data-acc="sair-ok">Sair</button></div>`));
+    if(a==="sair-ok") return sairConta(); return; }
+  if(d.foto) return pickFoto(d.foto);
   if("close" in d) return closeSheet();
   if(d.tab){ if(d.sub===undefined) sub=null; closeSheet(); if(d.tab===tab&&!sub){ scrollTo({top:0,behavior:"smooth"}); render(true); return; } return go(d.tab); }
   if(d.sub){ const to=d.tabto||(["semanas","metodo","alertas"].includes(d.sub)||d.sub.startsWith("g:")?"guias":tab); closeSheet(); return go(to,d.sub); }
@@ -1534,7 +1733,7 @@ document.addEventListener("click",e=>{ const t=e.target.closest("button,a,[data-
   if(d.fra) return fralda(d.fra);
   if(d.apl) return aplicar(d.apl);
   if(d.del) return sheetDel(d.del);
-  if(d.delok){ S.ev=S.ev.filter(x=>x.id!==d.delok); save(); closeSheet(); toast("Registro apagado"); return render(true); }
+  if(d.delok){ S.ev=S.ev.filter(x=>x.id!==d.delok); S.del=(S.del||[]).concat(d.delok).slice(-3000); save(); closeSheet(); toast("Registro apagado"); return render(true); }
   if(d.dseg){ dseg=d.dseg; return render(true); }
   if(d.sheet){ const m={add:sheetAdd,choro:sheetChoro,produtos:sheetProdutos,dados:sheetDados,backup:sheetBackup,apagar:sheetApagar,instalar:sheetInstalar,lembretes:sheetLembretes,checkin:()=>sheetCheckin(false),relatorio:sheetRelatorio}[d.sheet]; return m&&m(); }
   if(d.addk) return sheetAdd(d.addk);
@@ -1547,7 +1746,7 @@ document.addEventListener("click",e=>{ const t=e.target.closest("button,a,[data-
   if(d.lemb){ S.lemb[d.lemb]=!S.lemb[d.lemb]; save(); return sheetLembretes(); }
   if("notif" in d) return enableNotif();
   if("restore" in d) return restore();
-  if("wipe" in d){ try{ localStorage.removeItem(KEY); }catch(x){} stopSom(); load(); OB=null; tab="hoje"; closeSheet(); render(); return; }
+  if("wipe" in d){ if(FB_ON&&CL.user) return apagarConta(); try{ localStorage.removeItem(KEY); }catch(x){} stopSom(); load(); OB=null; tab="hoje"; closeSheet(); render(); return; }
   if("install" in d){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.finally(()=>{ deferredPrompt=null; closeSheet(); }); } return; }
   if(d.copy) return copyTxt(d.copy);
   if(d.copyFrom) return copyTxt($("#"+d.copyFrom).value);
@@ -1586,22 +1785,44 @@ setInterval(()=>{ const now=Date.now();
     if(left<=0) stopSom(); else { if(left<10000&&!isIOS) AU.volume=Math.max(0,S.som.vol*left/10000);
       const p=$("[data-pltime]"); if(p) p.textContent="desliga em "+clock(left); const n=$("[data-ntimer]"); if(n) n.textContent=clock(left); } }
   if(NM.on){ const c=$("[data-nclock]"), d=new Date(); if(c) c.textContent=pad2(d.getHours())+":"+pad2(d.getMinutes()); }
-  mgTick();
+  mgTick(); if(Math.floor(now/1000)%5===0) saveUI();
   const m=new Date().getMinutes(); if(m!==lastMin){ lastMin=m; if(S.onb&&!sheetOpen&&!MG&&!NM.on&&tab==="hoje"&&!document.activeElement?.matches("input,textarea")) render(true); }
 },1000);
-document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"){ if(NM.on||MG) lockWake(); if(S.onb&&!sheetOpen&&!MG) render(true); } });
+addEventListener("pagehide",saveUI);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden"){ saveUI(); return; } if(document.visibilityState==="visible"){ if(NM.on||MG) lockWake(); if(S.onb&&!sheetOpen&&!MG) render(true); } });
 AU.addEventListener("pause",()=>{ if(PL.playing&&!AU.ended&&document.visibilityState==="visible"&&AU.paused){ /* pausado pelo sistema */ } });
 
 /* ---------- rotas (links de notificação) ---------- */
 function route(){ const h=(location.hash||"").replace("#",""); if(!h||!S.onb) return;
-  const map={hoje:["hoje"],diario:["diario"],acalmar:["acalmar"],guias:["guias"],mamae:["mamae"],comprar:["comprar"],semana:["guias","semanas"],alertas:["guias","alertas"]};
+  const map={conta:["conta"],hoje:["hoje"],diario:["diario"],acalmar:["acalmar"],guias:["guias"],mamae:["mamae"],comprar:["comprar"],semana:["guias","semanas"],alertas:["guias","alertas"]};
   if(map[h]){ go(map[h][0],map[h][1]||null); }
   else if(h==="noite") openNight(); else if(h.startsWith("massagem-")) openMass(h.slice(9)); else if(h==="checkin") sheetCheckin(false); else if(h==="respirar") openMass("respirar");
   try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){} }
 addEventListener("hashchange",route);
 
+/* ---------- memória da tela: o celular pode recarregar o app quando você sai e volta ---------- */
+const UIKEY="noite_ui_v1";
+function saveUI(){ try{ if(OB&&!S.onb&&$(".ob")) obSaveInputs();
+  localStorage.setItem(UIKEY,JSON.stringify({t:Date.now(),tab,sub,dseg,y:scrollY,ob:!S.onb?OB:null,night:NM.on?{red:NM.red}:null,
+    mg:MG&&!MG.ended&&MG.i>=0?{id:MG.m.id,i:MG.i,left:MG.left,fromRit:MG.fromRit}:null,som:(PL.playing||PL.resume)&&PL.id?{id:PL.id}:null})); }catch(e){} }
+function restoreUI(){ let u=null; try{ u=JSON.parse(localStorage.getItem(UIKEY)||"null"); }catch(e){} if(!u) return null; const age=Date.now()-u.t;
+  if(!S.onb&&u.ob&&age<7*DAY){ OB=u.ob; if(OB.step===6) OB.step=7; }
+  if(S.onb&&age<3*3600e3){ tab=u.tab||"hoje"; sub=u.sub||null; dseg=u.dseg||"hoje"; return u; } return null; }
+function afterRestore(u){ if(!u) return; if(u.y) setTimeout(()=>scrollTo(0,u.y),30);
+  if(u.som&&SONS.find(x=>x.id===u.som.id)){ PL.id=u.som.id; PL.resume=true; updatePlayer(); }
+  if(u.night){ NM.red=!!u.night.red; openNight(false); }
+  if(u.mg){ const m=u.mg.id==="respirar"?RESPIRAR:MASSAGENS.find(x=>x.id===u.mg.id); if(m){ MG={m,i:u.mg.i,left:Math.max(1,u.mg.left),paused:true,ended:false,fromRit:u.mg.fromRit,el:0}; renderMG(); } } }
+
+/* navegador de dentro do WhatsApp/Instagram apaga os dados ao fechar */
+function inApp(){ return /FBAN|FBAV|FB_IAB|Instagram|WhatsApp|Line\/|Snapchat|TikTok|musical_ly|Bytedance|; wv\)/i.test(navigator.userAgent); }
+function inAppBanner(){ if(!inApp()) return ""; return `<div style="background:#FFF4DA;color:#5A3B00;padding:calc(10px + var(--top)) 16px 10px;font-size:14px;line-height:1.35;position:relative;z-index:5"><b>Abra no navegador para não perder seus dados.</b> Você está dentro do WhatsApp/Instagram, que apaga tudo ao fechar. Toque nos <b>3 pontinhos</b> (ou no ícone de compartilhar) e escolha <b>Abrir no ${isIOS?"Safari":"Chrome"}</b>. <button class="link" data-copy="${esc(location.href.split("#")[0])}">Copiar link</button></div>`; }
+
 /* ---------- início ---------- */
-load(); render(); loadTrackers(); route(); track("app_open",{standalone:isStandalone()?"1":"0"});
+if(isIOS) document.documentElement.classList.add("ios");
+load(); const _u=restoreUI(); render(); afterRestore(_u); loadTrackers(); route(); initCloud();
+loadIDB().then(raw=>{ if(!raw) { if(S.onb) saveIDB(); return; } try{ const o=JSON.parse(raw);
+  if(o&&o.onb&&(!S.onb||(o.salvo||0)>(S.salvo||0))){ S=Object.assign(blank(),o); try{ localStorage.setItem(KEY,raw); }catch(e){} OB=null; render(); if(!_u) toast("Seus dados foram recuperados"); } }catch(e){} });
+try{ navigator.storage&&navigator.storage.persist&&navigator.storage.persist(); }catch(e){} track("app_open",{standalone:isStandalone()?"1":"0"});
 if(/^https?:/.test(location.protocol)) addEventListener("load",()=>{
   fetch("manifest.webmanifest",{method:"HEAD",cache:"no-store"}).then(r=>{ if(!r.ok) throw 0; }).catch(()=>{ const base=location.href.split("#")[0].split("?")[0];
     const m={name:APP_NAME,short_name:APP_NAME,lang:"pt-BR",start_url:base,scope:base.replace(/[^/]*$/,""),display:"standalone",background_color:"#22145A",theme_color:"#5536B9",icons:[{src:ICON192,sizes:"192x192",type:"image/png"},{src:ICON512,sizes:"512x512",type:"image/png"}]};
