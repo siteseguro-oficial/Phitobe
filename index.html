@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Noite Tranquila</title>
+<meta name="description" content="Ritual da noite, sons para dormir, massagens guiadas e diário do bebê.">
+<meta name="theme-color" content="#5536B9">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Noite Tranquila">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F2FB; --card:#fff; --ink:#261E3C; --ink2:#6A6283; --ink3:#9A93B0;
+  --pri:#6B4ECF; --pri2:#8A70E6; --prid:#45299E; --soft:#EEE8FB; --soft2:#F7F4FD; --line:#E7E1F4;
+  --ok:#2E9E68; --okb:#E5F5EC; --warn:#D9781F; --warnb:#FDF0E2; --bad:#D14C4C; --badb:#FCE9E9;
+  --gold:#F2C46B; --night:#120D24; --night2:#1E1638;
+  --r:20px; --rs:14px; --sh:0 6px 24px rgba(60,35,140,.08); --sh2:0 10px 34px rgba(60,35,140,.16);
+  --navh:74px; --safe:env(safe-area-inset-bottom,0px);
+  --f:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body{overscroll-behavior-y:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+h1,h2,h3{margin:0;line-height:1.2}
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-.15em;flex:none}
+.press{transition:transform .12s ease,opacity .12s}
+.press:active{transform:scale(.97);opacity:.9}
+.hide{display:none!important}
+#app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative;padding-bottom:calc(var(--navh) + var(--safe) + 24px)}
+#app.noNav{padding-bottom:24px}
+body.hasPlayer #app{padding-bottom:calc(var(--navh) + var(--safe) + 100px)}
+body.hasPlayer #app.noNav{padding-bottom:100px}
+.wrap{padding:0 18px}
+
+/* topo */
+.top{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px;position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg) 70%,rgba(245,242,251,0))}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
+.logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(160deg,#7C5CD9,#40258F);display:grid;place-items:center;box-shadow:0 4px 12px rgba(80,50,180,.3)}
+.logo svg{width:22px;height:22px}
+.topbtn{width:42px;height:42px;border-radius:14px;background:var(--card);display:grid;place-items:center;box-shadow:var(--sh);position:relative;font-size:20px;color:var(--prid)}
+.topbtn .dot{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--bad);border:2px solid #fff}
+
+/* cabeçalhos de página */
+.hello{padding:6px 18px 4px}
+.hello small{color:var(--ink2);font-weight:700;font-size:14px}
+.hello h1{font-size:26px;font-weight:900;margin-top:2px;letter-spacing:-.3px}
+.hello p{margin:4px 0 0;color:var(--ink2);font-size:15px}
+.ptop{padding:8px 18px 4px;display:flex;align-items:flex-start;gap:12px}
+.ptop h1{font-size:26px;font-weight:900;letter-spacing:-.3px}
+.ptop p{margin:3px 0 0;color:var(--ink2);font-size:15px}
+.back{width:40px;height:40px;border-radius:13px;background:var(--card);box-shadow:var(--sh);display:grid;place-items:center;font-size:20px;flex:none;color:var(--prid)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:26px 18px 10px}
+.sec h2{font-size:18px;font-weight:900}
+.sec span,.sec button{font-size:14px;color:var(--pri);font-weight:800}
+
+/* cartões */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin:12px 18px}
+.card.flat{box-shadow:none;border:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px}
+.col{display:flex;flex-direction:column}
+.grow{flex:1;min-width:0}
+.muted{color:var(--ink2)}
+.small{font-size:13px}
+.b{font-weight:800}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--soft);color:var(--prid);font-weight:800;font-size:13px}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:800;background:var(--soft);color:var(--prid)}
+.pill.ok{background:var(--okb);color:var(--ok)} .pill.warn{background:var(--warnb);color:var(--warn)} .pill.bad{background:var(--badb);color:var(--bad)}
+
+/* botões */
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 18px;border-radius:16px;background:linear-gradient(180deg,#7A5CE0,#5B3EC2);color:#fff;font-weight:900;font-size:16px;letter-spacing:.2px;box-shadow:0 8px 20px rgba(91,62,194,.35);text-decoration:none;text-align:center}
+.cta.green{background:linear-gradient(180deg,#3DBA7C,#26975F);box-shadow:0 8px 20px rgba(38,151,95,.3)}
+.cta.ghost{background:var(--soft);color:var(--prid);box-shadow:none}
+.cta.white{background:#fff;color:var(--prid);box-shadow:none}
+.cta.sm{padding:11px 14px;font-size:14px;border-radius:13px;width:auto}
+.cta:disabled{opacity:.45;box-shadow:none}
+.link{color:var(--pri);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+
+/* hero / ritual */
+.hero{margin:12px 18px;border-radius:24px;padding:18px;color:#fff;background:radial-gradient(120% 120% at 100% 0%,#8C6CF0 0%,#5434B8 45%,#2B1A6B 100%);box-shadow:var(--sh2);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,226,160,.35),rgba(255,226,160,0) 70%)}
+.hero h2{font-size:20px;font-weight:900}
+.hero .sub{opacity:.85;font-size:14px;margin-top:2px}
+.ritual-head{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+.ring{width:62px;height:62px;flex:none;position:relative}
+.ring svg{width:62px;height:62px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:15px;font-weight:900}
+.steps{margin-top:14px;display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
+.step{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:15px;padding:10px 12px;text-align:left;width:100%}
+.step .ck{width:26px;height:26px;border-radius:9px;border:2px solid rgba(255,255,255,.55);display:grid;place-items:center;flex:none;font-size:15px}
+.step.on .ck{background:var(--gold);border-color:var(--gold);color:#3A2470}
+.step.on .st{opacity:.65;text-decoration:line-through;text-decoration-color:rgba(255,255,255,.5)}
+.step .st{font-weight:800;font-size:15px}
+.step .ss{font-size:12.5px;opacity:.78;line-height:1.3;margin-top:1px}
+.step .go{margin-left:auto;font-size:12px;font-weight:900;background:#fff;color:var(--prid);padding:6px 10px;border-radius:999px;flex:none}
+.done-banner{margin-top:14px;background:rgba(255,255,255,.14);border-radius:15px;padding:12px;text-align:center;font-weight:800;position:relative;z-index:1}
+
+/* estoque */
+.stock{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:12px 14px;margin:12px 18px;width:calc(100% - 36px);text-align:left}
+.stock.urg{background:linear-gradient(135deg,#FFF6EA,#FFE9D2);border:1.5px solid #F6C58F}
+.stock .tx{flex:1;min-width:0}
+.stock small{display:block;color:var(--ink2);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.stock b{display:block;font-size:16px;font-weight:900}
+.stock span.s{display:block;font-size:13px;color:var(--ink2)}
+.bar{height:7px;border-radius:9px;background:var(--soft);overflow:hidden;margin-top:7px}
+.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--pri2),var(--pri))}
+.urg .bar i{background:linear-gradient(90deg,#F4A04C,#E0732A)}
+.stock .go{font-weight:900;font-size:13px;padding:8px 12px;border-radius:999px;background:var(--pri);color:#fff;flex:none}
+.urg .go{background:#E0732A}
+.minis{display:flex;gap:10px;overflow-x:auto;padding:4px 18px 6px;scrollbar-width:none}
+.minis::-webkit-scrollbar{display:none}
+.mini{flex:none;width:136px;background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:12px;text-align:left}
+.mini b{display:block;font-size:14px;font-weight:900;margin-top:6px;line-height:1.2}
+.mini small{display:block;color:var(--ink2);font-size:12.5px}
+
+/* garrafinha */
+.btl{display:block;flex:none}
+
+/* janela de sono */
+.nap{display:flex;gap:14px;align-items:center}
+.nap .big{font-size:28px;font-weight:900;letter-spacing:-.5px}
+.nap-ic{width:52px;height:52px;border-radius:16px;background:var(--soft);display:grid;place-items:center;font-size:26px;color:var(--pri);flex:none}
+
+/* registro rápido */
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 18px}
+.qb{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:12px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:12.5px;position:relative}
+.qb .qi{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:21px}
+.qb.live{outline:2.5px solid var(--pri);outline-offset:-2.5px}
+.qb.live:after{content:"";position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--bad);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.c-mam{background:#FCE8F0;color:#C2477A}.c-sono{background:#ECE6FD;color:#6B4ECF}.c-fra{background:#E4F3FB;color:#2A87B8}.c-col{background:#FFF1DA;color:#C7851A}.c-apl{background:#E6F6EE;color:#2E9E68}
+
+/* resumo */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--soft2);border-radius:15px;padding:10px;text-align:center}
+.stat b{display:block;font-size:20px;font-weight:900}
+.stat small{color:var(--ink2);font-size:12px;font-weight:700}
+
+/* dica */
+.tip{display:flex;gap:12px;align-items:flex-start}
+.tip .ti{width:42px;height:42px;border-radius:14px;background:#FFF4DA;color:#C98A12;display:grid;place-items:center;font-size:21px;flex:none}
+.tip b{display:block;font-size:15.5px}
+.tip p{margin:2px 0 0;color:var(--ink2);font-size:14.5px}
+
+/* upsell */
+.ups{display:flex;gap:14px;align-items:center;border-radius:var(--r);padding:14px;margin:12px 18px;background:linear-gradient(135deg,#FBF8FF,#F0EAFE);border:1.5px solid #E0D6FA;text-align:left;width:calc(100% - 36px)}
+.ups small{color:var(--pri);font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.ups b{display:block;font-size:16px;font-weight:900;margin-top:1px}
+.ups p{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}
+
+/* diário */
+.seg{display:flex;background:var(--soft);border-radius:14px;padding:4px;margin:12px 18px}
+.seg button{flex:1;padding:9px;border-radius:11px;font-weight:800;font-size:14px;color:var(--ink2)}
+.seg button.on{background:#fff;color:var(--prid);box-shadow:0 2px 8px rgba(60,35,140,.1)}
+.tracker{display:flex;flex-direction:column;gap:12px}
+.trk{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:14px;margin:0 18px}
+.trk-h{display:flex;align-items:center;gap:12px}
+.trk-h .qi{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none}
+.trk-h b{font-size:16.5px;font-weight:900;display:block}
+.trk-h small{color:var(--ink2);font-size:13px}
+.timer{font-variant-numeric:tabular-nums;font-weight:900;font-size:30px;letter-spacing:-.5px}
+.btns{display:flex;gap:8px;margin-top:12px}
+.btns>*{flex:1}
+.tb{padding:12px 8px;border-radius:14px;background:var(--soft);color:var(--prid);font-weight:900;font-size:14.5px;text-align:center}
+.tb.on{background:var(--pri);color:#fff}
+.tb.stop{background:var(--bad);color:#fff}
+.tb.alt{background:#FCE8F0;color:#C2477A}
+.tl{margin:0 18px}
+.tli{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.tli:last-child{border-bottom:0}
+.tli .qi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px;flex:none}
+.tli b{font-size:15px;display:block}
+.tli small{color:var(--ink2);font-size:13px}
+.tli time{margin-left:auto;font-weight:800;color:var(--ink2);font-size:14px;font-variant-numeric:tabular-nums}
+.tli .del{color:var(--ink3);font-size:18px;padding:6px;margin-right:-6px}
+.empty{text-align:center;color:var(--ink2);padding:22px 10px;font-size:14.5px}
+.chart{width:100%;height:auto;display:block}
+.chart text{font-family:var(--f);font-size:11px;fill:var(--ink2);font-weight:700}
+.chart .v{fill:var(--ink);font-weight:900;font-size:11px}
+
+/* acalmar */
+.night-cta{display:flex;align-items:center;gap:14px;margin:12px 18px;padding:18px;border-radius:24px;background:radial-gradient(130% 140% at 0% 0%,#2E2160 0%,#17112F 60%,#0D0920 100%);color:#fff;box-shadow:var(--sh2);width:calc(100% - 36px);text-align:left;position:relative;overflow:hidden}
+.night-cta .ni{width:56px;height:56px;border-radius:18px;background:rgba(255,226,160,.16);color:var(--gold);display:grid;place-items:center;font-size:30px;flex:none}
+.night-cta b{font-size:19px;font-weight:900;display:block}
+.night-cta small{opacity:.8;font-size:13.5px}
+.sons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px}
+.som{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:13px;display:flex;flex-direction:column;gap:8px;text-align:left;position:relative;min-height:104px}
+.som .si{width:40px;height:40px;border-radius:13px;background:var(--soft);color:var(--pri);display:grid;place-items:center;font-size:20px}
+.som b{font-size:14.5px;font-weight:900;line-height:1.2}
+.som small{font-size:12px;color:var(--ink2);line-height:1.25}
+.som.on{background:linear-gradient(160deg,#7A5CE0,#4B2FA8);color:#fff}
+.som.on .si{background:rgba(255,255,255,.18);color:#fff}
+.som.on small{color:rgba(255,255,255,.8)}
+.eq{position:absolute;right:13px;top:16px;display:flex;gap:2px;align-items:flex-end;height:14px}
+.eq i{width:3px;background:currentColor;border-radius:2px;animation:eq 1s infinite ease-in-out}
+.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}
+@keyframes eq{0%,100%{height:4px}50%{height:14px}}
+.mass{display:flex;align-items:center;gap:13px;background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:12px 14px;margin:10px 18px;width:calc(100% - 36px);text-align:left}
+.mass b{display:block;font-size:15.5px;font-weight:900}
+.mass small{color:var(--ink2);font-size:13px}
+.mass .dur{margin-left:auto;font-size:12.5px;font-weight:900;color:var(--pri);background:var(--soft);padding:5px 9px;border-radius:999px;flex:none}
+.sos{display:flex;align-items:center;gap:13px;margin:12px 18px;padding:15px;border-radius:var(--r);background:linear-gradient(135deg,#FFEFF2,#FFE1E7);border:1.5px solid #F7BFCB;width:calc(100% - 36px);text-align:left}
+.sos .si{width:46px;height:46px;border-radius:15px;background:#fff;color:#D0466A;display:grid;place-items:center;font-size:24px;flex:none}
+.sos b{font-size:16px;font-weight:900;display:block;color:#8F2442}
+.sos small{color:#A5475F;font-size:13px}
+
+/* player fixo */
+.player{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--navh) + var(--safe) + 10px);width:calc(100% - 24px);max-width:456px;background:#1D1536;color:#fff;border-radius:18px;padding:10px 12px;display:flex;align-items:center;gap:10px;z-index:40;box-shadow:0 12px 30px rgba(20,10,50,.35)}
+#app.noNav ~ .player{bottom:calc(var(--safe) + 12px)}
+.player .pi{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:19px;color:var(--gold);flex:none}
+.player b{font-size:14.5px;display:block;line-height:1.2}
+.player small{opacity:.75;font-size:12.5px}
+.player .pb{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:18px;flex:none}
+.tchips{display:flex;gap:8px;flex-wrap:wrap}
+.tchip{padding:8px 13px;border-radius:999px;background:var(--soft);font-weight:800;font-size:14px;color:var(--prid)}
+.tchip.on{background:var(--pri);color:#fff}
+.vol{width:100%;accent-color:var(--pri)}
+
+/* guias */
+.method{display:flex;gap:14px;align-items:center;margin:12px 18px;padding:16px;border-radius:var(--r);background:linear-gradient(135deg,#6B4ECF,#3F2793);color:#fff;width:calc(100% - 36px);text-align:left;box-shadow:var(--sh2)}
+.method .mi{width:48px;height:48px;border-radius:15px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:24px;flex:none}
+.method small{opacity:.8;font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.method b{display:block;font-size:17px;font-weight:900}
+.method em{font-style:normal;opacity:.85;font-size:13.5px}
+.gg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px}
+.gc{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:14px;text-align:left;display:flex;flex-direction:column;gap:8px}
+.gc .gi{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:21px}
+.gc b{font-size:15.5px;font-weight:900;line-height:1.2}
+.gc small{font-size:12.5px;color:var(--ink2);line-height:1.3}
+.alert-cta{display:flex;align-items:center;gap:13px;margin:14px 18px;padding:15px;border-radius:var(--r);background:#FDECEC;border:1.5px solid #F3B9B9;color:#8E2121;width:calc(100% - 36px);text-align:left}
+.alert-cta .ai{width:44px;height:44px;border-radius:14px;background:#D14C4C;color:#fff;display:grid;place-items:center;font-size:22px;flex:none}
+.alert-cta b{display:block;font-size:16px;font-weight:900}
+.alert-cta small{font-size:13px;color:#A54545}
+.art h3{font-size:17px;font-weight:900;margin:20px 0 8px}
+.art ul{margin:0;padding:0;list-style:none}
+.art li{position:relative;padding:8px 0 8px 26px;font-size:15.5px;border-bottom:1px solid var(--line)}
+.art li:last-child{border-bottom:0}
+.art li:before{content:"";position:absolute;left:4px;top:15px;width:9px;height:9px;border-radius:50%;background:var(--pri2)}
+.week{display:flex;gap:12px;align-items:flex-start}
+.week .wn{width:52px;height:52px;border-radius:16px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;color:var(--prid)}
+.week .wn b{font-size:20px;font-weight:900;line-height:1}
+.week .wn small{font-size:10.5px;font-weight:800}
+.alr{padding:12px 0;border-bottom:1px solid var(--line)}
+.alr:last-child{border-bottom:0}
+.alr b{display:flex;align-items:center;gap:8px;color:#A32B2B;font-size:15.5px}
+.alr p{margin:3px 0 0;font-size:14.5px;color:var(--ink2)}
+
+/* mamãe */
+.moods{display:flex;justify-content:space-between;gap:6px;margin-top:12px}
+.mood{flex:1;padding:10px 0 8px;border-radius:15px;background:var(--soft2);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;font-weight:800;color:var(--ink2)}
+.mood span{font-size:27px;line-height:1}
+.mood.on{background:var(--soft);outline:2px solid var(--pri);color:var(--prid)}
+.care{background:#FFF6EC;border:1.5px solid #F7D3A8}
+.quote{font-size:17px;font-weight:800;line-height:1.4;color:var(--prid)}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 18px}
+.badge{background:var(--card);border-radius:16px;padding:12px 6px;text-align:center;box-shadow:var(--sh);opacity:.5;filter:grayscale(1)}
+.badge.on{opacity:1;filter:none}
+.badge .bi{width:42px;height:42px;margin:0 auto 6px;border-radius:50%;background:linear-gradient(160deg,#FFE3A3,#F2B94A);display:grid;place-items:center;font-size:20px;color:#7A4A00}
+.badge b{display:block;font-size:12.5px;font-weight:900;line-height:1.2}
+.badge small{font-size:11px;color:var(--ink2);line-height:1.2;display:block;margin-top:2px}
+.list{margin:0 18px;background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.li{display:flex;align-items:center;gap:13px;padding:14px 16px;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.li:last-child{border-bottom:0}
+.li .lic{width:36px;height:36px;border-radius:12px;background:var(--soft);color:var(--pri);display:grid;place-items:center;font-size:18px;flex:none}
+.li b{display:block;font-size:15.5px}
+.li small{color:var(--ink2);font-size:13px}
+.li .chev{margin-left:auto;color:var(--ink3);font-size:18px}
+.addapp{display:flex;align-items:center;gap:12px;margin:12px 18px;padding:13px 14px;border-radius:var(--r);background:var(--card);box-shadow:var(--sh);width:calc(100% - 36px);text-align:left;border:1.5px dashed #CBBDF3}
+.addapp b{display:block;font-size:15px}
+.addapp small{color:var(--ink2);font-size:13px}
+.addapp .go{margin-left:auto;background:var(--pri);color:#fff;font-weight:900;font-size:13px;padding:8px 12px;border-radius:999px;flex:none}
+
+/* comprar */
+.bhero{margin:12px 18px;border-radius:24px;padding:16px;background:linear-gradient(160deg,#2B1A6B,#4B2FA8);color:#fff;box-shadow:var(--sh2)}
+.bprod{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.14)}
+.bprod:last-child{border-bottom:0}
+.bprod b{display:block;font-size:15.5px}
+.bprod small{opacity:.85;font-size:13px}
+.bprod .bar{background:rgba(255,255,255,.16)}
+.bprod .bar i{background:linear-gradient(90deg,#FFE3A3,#F2B94A)}
+.bprod.urg .bar i{background:linear-gradient(90deg,#FFB27A,#F07A3A)}
+.bmsg{margin-top:10px;background:rgba(255,255,255,.12);border-radius:14px;padding:11px 12px;font-size:14px}
+.bmsg.urg{background:#F07A3A;font-weight:800}
+.kit{background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:16px;margin:12px 18px;position:relative;border:2px solid transparent}
+.kit.best{border-color:var(--pri)}
+.kit .flag{position:absolute;top:-11px;left:16px;background:var(--pri);color:#fff;font-size:11.5px;font-weight:900;padding:4px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
+.kit .flag.mine{background:var(--ok)}
+.kit-top{display:flex;gap:14px;align-items:center}
+.kit-pics{display:flex;align-items:flex-end;gap:2px;flex:none}
+.kit-tx b{display:block;font-size:17px;font-weight:900}
+.kit-tx small{color:var(--ink2);font-size:13px;display:block}
+.kit-price{display:flex;align-items:flex-end;justify-content:space-between;margin:12px 0}
+.kit-price s{color:var(--ink3);font-size:13.5px;display:block}
+.kit-price .pp b{font-size:20px;font-weight:900;display:block;line-height:1.15}
+.kit-price .pp small{color:var(--ink2);font-size:13px}
+.eco{background:var(--okb);color:var(--ok);font-weight:900;font-size:12.5px;padding:5px 9px;border-radius:999px}
+.coupon{display:flex;gap:12px;align-items:center;margin:12px 18px;padding:14px;border-radius:var(--r);border:2px dashed #CBBDF3;background:#FBF9FF}
+.coupon b{font-size:19px;font-weight:900;letter-spacing:1px;color:var(--prid)}
+.coupon small{display:block;color:var(--ink2);font-size:12.5px;font-weight:800}
+.trust{margin:16px 18px;color:var(--ink2);font-size:12.5px;text-align:center;line-height:1.5}
+
+/* navegação */
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;height:calc(var(--navh) + var(--safe));padding-bottom:var(--safe);background:rgba(255,255,255,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;z-index:30}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:800;color:var(--ink3)}
+.nav button .ic{font-size:23px}
+.nav button.on{color:var(--pri)}
+.nav .mid .mb{width:54px;height:54px;border-radius:19px;margin-top:-26px;background:linear-gradient(160deg,#7C5CD9,#3F2793);color:var(--gold);display:grid;place-items:center;box-shadow:0 8px 22px rgba(70,40,170,.45);border:4px solid var(--bg)}
+.nav .mid .mb .ic{font-size:25px}
+
+/* folha (bottom sheet) */
+.scrim{position:fixed;inset:0;background:rgba(20,12,45,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:100%;max-width:480px;max-height:92vh;max-height:92dvh;overflow:auto;background:var(--bg);border-radius:26px 26px 0 0;z-index:61;padding:10px 0 calc(22px + var(--safe));transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .grab{display:block;width:44px;height:5px;border-radius:9px;background:#D5CDEA;margin:0 auto 8px}
+.sheet .close{position:absolute;right:14px;top:12px;width:36px;height:36px;border-radius:12px;background:var(--card);display:grid;place-items:center;font-size:18px;box-shadow:var(--sh);color:var(--ink2)}
+.sh-h{padding:8px 60px 4px 18px}
+.sh-h h2{font-size:22px;font-weight:900}
+.sh-h p{margin:4px 0 0;color:var(--ink2);font-size:14.5px}
+.sh-b{padding:4px 18px}
+.field{margin:14px 0}
+.field label{display:block;font-weight:800;font-size:14px;margin-bottom:6px}
+.inp{width:100%;padding:14px 15px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-size:16px;outline:none}
+.inp:focus{border-color:var(--pri2);box-shadow:0 0 0 4px rgba(138,112,230,.15)}
+textarea.inp{min-height:110px;font-size:13px;font-family:ui-monospace,monospace}
+
+/* toast */
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);background:#1D1536;color:#fff;padding:11px 16px;border-radius:14px;font-weight:800;font-size:14.5px;z-index:90;transition:transform .25s;max-width:90%;text-align:center;box-shadow:0 10px 26px rgba(20,10,50,.3)}
+.toast.on{transform:translate(-50%,0)}
+
+/* onboarding */
+.ob{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:16px 22px calc(22px + var(--safe));background:radial-gradient(120% 70% at 100% 0%,#8D6EF0 0%,#5536B9 40%,#22145A 100%);color:#fff;position:relative;overflow:hidden}
+.ob:before{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;border:1px solid rgba(255,255,255,.1)}
+.ob-top{display:flex;align-items:center;gap:12px;margin-bottom:22px;position:relative;z-index:1}
+.ob-back{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:20px;color:#fff}
+.ob-prog{flex:1;height:6px;border-radius:9px;background:rgba(255,255,255,.18);overflow:hidden}
+.ob-prog i{display:block;height:100%;background:var(--gold);border-radius:9px;transition:width .3s}
+.ob-count{font-size:13px;font-weight:800;opacity:.8;width:28px;text-align:right}
+.ob-body{flex:1;display:flex;flex-direction:column;position:relative;z-index:1}
+.applogo{width:84px;height:84px;border-radius:26px;background:linear-gradient(160deg,#7C5CD9,#3A228A);display:grid;place-items:center;box-shadow:0 14px 34px rgba(10,5,40,.45),inset 0 0 0 1.5px rgba(255,226,160,.35)}
+.applogo svg{width:52px;height:52px}
+.applogo.small{width:56px;height:56px;border-radius:18px;margin-bottom:18px}
+.applogo.small svg{width:34px;height:34px}
+.ob-title{font-size:29px;font-weight:900;letter-spacing:-.4px;line-height:1.15}
+.ob-title em{font-style:normal;color:var(--gold)}
+.ob-sub{font-size:16px;opacity:.88;margin:10px 0 0}
+.ob-foot{margin-top:auto;padding-top:20px}
+.ob .inp{background:#fff;color:var(--ink);border:0;margin-top:20px;font-size:17px}
+.ob label.l{display:block;font-weight:800;margin:18px 0 -10px;font-size:14.5px;opacity:.92}
+.wfeat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:26px}
+.wfeat span{display:flex;align-items:center;gap:9px;justify-content:center;padding:14px 8px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-weight:800;font-size:15px}
+.wfeat .ic{color:var(--gold);font-size:19px}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.opt{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.16);text-align:left;font-weight:800;font-size:15.5px;width:100%}
+.opt .oi{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:19px;flex:none;color:var(--gold)}
+.opt small{display:block;font-weight:600;opacity:.8;font-size:13px}
+.opt.on{background:#fff;color:var(--ink);border-color:#fff}
+.opt.on .oi{background:var(--soft);color:var(--pri)}
+.opt .ck{margin-left:auto;width:24px;height:24px;border-radius:8px;border:2px solid rgba(255,255,255,.5);display:grid;place-items:center;font-size:14px;flex:none}
+.opt.on .ck{background:var(--pri);border-color:var(--pri);color:#fff}
+.optg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:20px}
+.optg .opt{justify-content:center;padding:14px 6px}
+.pq{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.16)}
+.pq.on{background:#fff;color:var(--ink);border-color:#fff}
+.pq b{display:block;font-size:15.5px}
+.pq small{display:block;font-size:12.5px;opacity:.8}
+.stp{display:flex;align-items:center;gap:6px;margin-left:auto;flex:none}
+.stp button{width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.16);font-size:18px;font-weight:900;display:grid;place-items:center}
+.pq.on .stp button{background:var(--soft);color:var(--prid)}
+.stp span{width:20px;text-align:center;font-weight:900;font-size:17px}
+.segw{display:flex;gap:8px;margin-top:14px}
+.segw button{flex:1;padding:11px;border-radius:13px;background:rgba(255,255,255,.12);font-weight:800;font-size:14.5px}
+.segw button.on{background:#fff;color:var(--prid)}
+.ob .cta{background:linear-gradient(180deg,#3DBA7C,#26975F);box-shadow:0 10px 24px rgba(10,40,20,.35)}
+.ob .cta:disabled{background:rgba(255,255,255,.25);box-shadow:none;opacity:1;color:rgba(255,255,255,.7)}
+.restore{display:block;margin:14px auto 0;font-size:14px;font-weight:800;opacity:.9;text-decoration:underline;text-underline-offset:3px}
+.wlink{font-weight:900;color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.build{display:flex;flex-direction:column;gap:14px;margin-top:26px}
+.build div{display:flex;align-items:center;gap:12px;font-weight:800;font-size:16px;opacity:.35;transition:opacity .3s}
+.build div.on{opacity:1}
+.build .bk{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;font-size:15px}
+.build div.on .bk{background:var(--gold);color:#3A2470}
+.summary{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:6px 14px;margin-top:20px}
+.summary .sr{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.summary .sr:last-child{border-bottom:0}
+.summary .sr .ic{color:var(--gold);font-size:20px}
+.summary .sr b{display:block;font-size:15px}
+.summary .sr small{opacity:.8;font-size:13px}
+
+/* modo noite */
+.nightm{position:fixed;inset:0;z-index:80;background:#000;color:#8E2A2A;display:flex;flex-direction:column;align-items:center;padding:calc(20px + env(safe-area-inset-top,0px)) 22px calc(26px + var(--safe));user-select:none}
+.nightm.red{background:#3B0606;color:#FF8A7A}
+.nightm .clock{font-size:76px;font-weight:300;letter-spacing:-2px;margin-top:9vh;font-variant-numeric:tabular-nums}
+.nightm .nsub{font-size:15px;opacity:.8;margin-top:4px;text-align:center}
+.nightm .nrow{display:flex;gap:10px;width:100%;max-width:420px;margin-top:14px}
+.nightm .nb{flex:1;padding:15px 8px;border-radius:16px;border:1.5px solid currentColor;font-weight:800;font-size:14.5px;display:flex;flex-direction:column;align-items:center;gap:5px;color:inherit;opacity:.85}
+.nightm .nb.on{background:currentColor}
+.nightm .nb.on span{color:#000}
+.nightm.red .nb.on span{color:#3B0606}
+.nightm .nb .ic{font-size:22px}
+.nightm .nfoot{margin-top:auto;width:100%;max-width:420px}
+.nightm .ntimer{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:6px}
+
+/* massagem guiada */
+.mg{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top,0px)) 22px calc(24px + var(--safe));color:#fff;background:radial-gradient(120% 80% at 50% 0%,#5A3CC4 0%,#2A1A6E 55%,#150E38 100%)}
+.mg-top{display:flex;align-items:center;gap:12px}
+.mg-top .x{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:18px}
+.mg-dots{flex:1;display:flex;gap:4px}
+.mg-dots i{flex:1;height:5px;border-radius:9px;background:rgba(255,255,255,.2)}
+.mg-dots i.on{background:var(--gold)}
+.mg-c{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.mg-c small{opacity:.75;font-weight:800;font-size:13px;letter-spacing:.4px;text-transform:uppercase}
+.mg-c h2{font-size:27px;font-weight:900;margin:6px 0 10px}
+.mg-c p{font-size:17px;opacity:.92;max-width:360px;margin:0}
+.mg-ring{width:190px;height:190px;position:relative;margin:26px 0 10px}
+.mg-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.mg-ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:40px;font-weight:900;font-variant-numeric:tabular-nums}
+.breath{width:190px;height:190px;position:relative;margin:26px 0 10px;display:grid;place-items:center}
+.breath i{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(255,226,160,.55),rgba(255,226,160,.1));transform:scale(.55);transition:transform 4s ease-in-out}
+.breath i.in{transform:scale(1)}
+.breath i.out{transform:scale(.55);transition-duration:6s}
+.breath b{position:relative;font-size:20px;font-weight:900}
+.mg-ctr{display:flex;gap:12px;justify-content:center;align-items:center}
+.mg-ctr button{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:22px}
+.mg-ctr button.main{width:72px;height:72px;background:#fff;color:var(--prid);font-size:28px}
+.mg-end{text-align:center}
+.mg-end .cta{margin-top:12px}
+
+/* instalar */
+.phone{display:flex;gap:12px;align-items:flex-start;padding:10px 0}
+.phone .n{width:30px;height:30px;border-radius:50%;background:var(--pri);color:#fff;font-weight:900;display:grid;place-items:center;flex:none}
+.phone p{margin:4px 0 0}
+
+@media (min-width:520px){ body{background:#E9E4F6} #app{background:var(--bg);box-shadow:0 0 40px rgba(60,35,140,.08)} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="player" class="player hide" aria-live="polite"></div>
+<div id="night"></div>
+<div id="mg"></div>
+<div id="scrim" class="scrim"></div>
+<div id="sheet" class="sheet" role="dialog" aria-modal="true"></div>
+<div id="toast" class="toast" role="status"></div>
+<script>
+/* ===== CONFIGURAÇÃO =====
+   Troque aqui nomes, preços e links. O resto do app se adapta sozinho. */
+const APP_NAME = "Noite Tranquila";   /* nome do app */
+const MARCA = "Phitobê";              /* nome da marca dos produtos */
+const CHECKOUT_URL = "https://phitobe.com.br/";  /* link padrão (troque pelos links de cada produto e kit abaixo) */
+const AUDIO_BASE = "audio/";          /* pasta dos sons. Se hospedar em outro lugar, coloque a URL completa terminando com / */
+
+const SUPORTE = "";        /* e-mail de suporte, ex.: "contato@suamarca.com.br". Vazio esconde o botão. */
+const WHATSAPP = "";       /* número com DDI e DDD, só números. Ex.: "5548999999999". Vazio esconde o botão. */
+
+/* Recompra */
+const PRAZO_ENTREGA = 7;   /* dias de antecedência sugeridos para pedir antes do frasco acabar */
+const CUPOM = "";          /* cupom de recompra, ex.: "NOITE10". Vazio esconde o bloco. */
+const CUPOM_PARAM = "";    /* nome do parâmetro de cupom no link do checkout, se existir (ex.: "coupon") */
+const UTM = {utm_source:"app_noite", utm_medium:"app", utm_campaign:"recompra"};
+const INDICACAO = {cupom:"", url:CHECKOUT_URL};  /* link para a mãe indicar a uma amiga */
+
+/* Métricas e lembretes */
+const GA4_ID = "";            /* ex.: "G-XXXXXXX" */
+const META_PIXEL_ID = "";     /* ex.: "123456789012345" */
+const ONESIGNAL_APP_ID = "";  /* App ID do OneSignal. Vazio esconde os lembretes. */
+
+/* Produtos (roll-ons). Confira no rótulo: aplicações por frasco e modo de uso.
+   aplicacoes = quantas aplicações rende 1 frasco | porDia = aplicações recomendadas por dia
+   url1 = checkout de 1 unidade | url2 = checkout de 2 unidades */
+const PRODUTOS = [
+  {id:"dormir",  nome:"Hora de Dormir", cor:"#7B5CD6", para:"bebe", ml:10, aplicacoes:60, porDia:1,
+   desc:"Blend calmante para a massagem do ritual da noite.",
+   modo:"Na sola dos pés (0 a 2 anos). Acima de 2 anos, também no peito e na nuca.",
+   preco1:129.00, parcela1:"12x de R$ 10,75", url1:CHECKOUT_URL,
+   preco2:187.00, parcela2:"12x de R$ 15,58", url2:CHECKOUT_URL},
+  {id:"colic",   nome:"Colic Zen",      cor:"#E3A91F", para:"bebe", ml:10, aplicacoes:60, porDia:2,
+   desc:"Para a massagem na barriguinha nos momentos de desconforto.",
+   modo:"Na barriga e nas costas, com massagem circular no sentido horário.",
+   preco1:129.00, parcela1:"12x de R$ 10,75", url1:CHECKOUT_URL,
+   preco2:187.00, parcela2:"12x de R$ 15,58", url2:CHECKOUT_URL},
+  {id:"respira", nome:"Respira",        cor:"#E0573F", para:"bebe", ml:10, aplicacoes:60, porDia:2,
+   desc:"Para a massagem no peito e nas costas nos dias de nariz entupido.",
+   modo:"No peito e nas costas, com massagem suave.",
+   preco1:129.00, parcela1:"12x de R$ 10,75", url1:CHECKOUT_URL,
+   preco2:187.00, parcela2:"12x de R$ 15,58", url2:CHECKOUT_URL},
+  {id:"mamae",   nome:"Calma Mamãe",    cor:"#D9668F", para:"mae", ml:10, aplicacoes:60, porDia:2,
+   desc:"Para os seus momentos de pausa e respiração.",
+   modo:"Nos pulsos e na nuca.",
+   preco1:129.00, parcela1:"12x de R$ 10,75", url1:CHECKOUT_URL,
+   preco2:187.00, parcela2:"12x de R$ 15,58", url2:CHECKOUT_URL}
+];
+
+/* Kits da aba Comprar. "itens" = quantas unidades de cada produto. "de" = preço riscado (vazio calcula pela soma das unidades). */
+const KITS = [
+  {id:"baby",    nome:"Kit Baby",    itens:{dormir:1, colic:1, respira:1}, preco:239.89, parcela:"12x de R$ 19,99", url:CHECKOUT_URL, extra:"Mais vendido"},
+  {id:"familia", nome:"Kit Família", itens:{dormir:1, colic:1, respira:1, mamae:1}, preco:299.90, parcela:"12x de R$ 24,99", url:CHECKOUT_URL, extra:"Kit completo"}
+];
+
+/* Qual produto ajuda em cada dor escolhida no início (usado nas sugestões) */
+const DOR_PRODUTO = {sono:"dormir", choro:"dormir", colica:"colic", refluxo:"colic", nariz:"respira", mae:"mamae"};
+
+</script>
+<script>
+/* ===== CONTEÚDO DO APP =====
+   Textos de guias, semanas, massagens e dicas.
+   {p:dormir} vira o nome do produto configurado (ex.: "Hora de Dormir"). */
+
+/* Janela de sono: quanto tempo o bebê costuma aguentar acordado, por idade (em semanas) */
+const JANELAS = [
+  {ate:4,  min:35,  max:60},
+  {ate:8,  min:50,  max:80},
+  {ate:13, min:60,  max:90},
+  {ate:17, min:75,  max:120},
+  {ate:26, min:105, max:150},
+  {ate:35, min:120, max:180},
+  {ate:44, min:150, max:210},
+  {ate:60, min:180, max:240}
+];
+
+/* Ritual da noite (checklist da aba Hoje) */
+const RITUAL = [
+  {id:"luz",     t:"Diminua as luzes",               s:"Penumbra 30 a 60 min antes. O corpo entende que é noite.", ic:"lamp"},
+  {id:"banho",   t:"Banho morno",                    s:"Água morna relaxa. Se o bebê se agita no banho, pule este passo.", ic:"bath", opcional:true},
+  {id:"massagem",t:"Massagem com o {p:dormir}",      s:"4 minutos de toque nos pezinhos. Toque para fazer guiado.", ic:"hands", acao:"massagem:sono", produto:"dormir"},
+  {id:"pijama",  t:"Fralda limpa e pijama",          s:"Roupa leve. Calor demais atrapalha o sono.", ic:"shirt"},
+  {id:"mamada",  t:"Mamada na penumbra",             s:"Luz fraca e pouca conversa. Ative o Modo Noite.", ic:"bottle", acao:"noite"},
+  {id:"som",     t:"Ruído branco ou canção",         s:"Sempre o mesmo som vira o sinal de dormir.", ic:"music", acao:"sons"},
+  {id:"berco",   t:"No berço, de barriga para cima", s:"Sonolento, mas ainda acordado. Berço vazio.", ic:"bed"}
+];
+
+/* Sons (arquivos na pasta audio/) */
+const SONS = [
+  {id:"ruido-branco", nome:"Ruído branco", desc:"Parecido com o chiado do útero", tipo:"amb", ic:"wave"},
+  {id:"utero",        nome:"Som do útero", desc:"Batimento e som abafado",        tipo:"amb", ic:"heart"},
+  {id:"shhh",         nome:"Shhh",          desc:"O “shhh” ritmado que acalma",    tipo:"amb", ic:"shh"},
+  {id:"chuva",        nome:"Chuva",         desc:"Chuva fina e constante",          tipo:"amb", ic:"rain"},
+  {id:"ventilador",   nome:"Ventilador",    desc:"Ruído grave e contínuo",          tipo:"amb", ic:"fan"},
+  {id:"ninar-estrelinha", nome:"Brilha, Brilha Estrelinha", desc:"Caixinha de música", tipo:"mus", ic:"star"},
+  {id:"ninar-brahms",     nome:"Canção de Ninar",           desc:"Brahms, caixinha de música", tipo:"mus", ic:"moon"},
+  {id:"ninar-caixinha",   nome:"Caixinha Mágica",           desc:"Melodia suave e contínua", tipo:"mus", ic:"music"}
+];
+
+/* Massagens guiadas. "produto" liga a massagem ao roll-on: ao terminar, a mãe confirma a aplicação. */
+const MASSAGENS = [
+  {id:"sono", titulo:"Massagem do sono", sub:"Pezinhos com o {p:dormir}", produto:"dormir", para:"bebe", cor:"dormir",
+   antes:"Luz baixa, mãos aquecidas e o bebê de fralda, deitado de barriga para cima à sua frente.",
+   passos:[
+    {t:"Aplique o {p:dormir}", d:"Passe o roll-on na sola de cada pezinho (uma passada em cada). Em crianças acima de 2 anos, também no peito e na nuca.", s:20},
+    {t:"Calcanhar aos dedos", d:"Com os polegares, deslize devagar do calcanhar até a base dos dedos. Repita sem pressa.", s:45},
+    {t:"Mesmo no outro pé", d:"Mesmo movimento no outro pezinho. Pressão leve, como quem espalha creme.", s:45},
+    {t:"Dedinhos", d:"Segure cada dedinho e deslize suavemente até a ponta, um de cada vez.", s:30},
+    {t:"Pernas (sem produto)", d:"Com a mão em concha, deslize da coxa até o pé, alternando as mãos. Movimentos longos.", s:40},
+    {t:"Peito: coração (sem produto)", d:"Mãos espalmadas no centro do peito, abra para os lados desenhando um coração.", s:40},
+    {t:"Abraço e canção", d:"Termine com o bebê no colo, cantando baixinho ou com o ruído branco ligado.", s:30}
+   ]},
+  {id:"colica", titulo:"I Love You para cólica", sub:"Barriguinha com o {p:colic}", produto:"colic", para:"bebe", cor:"colic",
+   antes:"Faça 30 a 45 min depois da mamada. Se o choro aumentar, pare e pegue no colo.",
+   passos:[
+    {t:"Aplique o {p:colic}", d:"Passe o roll-on na barriguinha e nas costas. Aqueça as suas mãos.", s:20},
+    {t:"Rodinhas no sentido do relógio", d:"Com a mão espalmada, faça círculos suaves em volta do umbigo, sempre no sentido horário.", s:45},
+    {t:"Letra I", d:"Do lado esquerdo do bebê, deslize de cima para baixo (abaixo das costelas até o quadril). 6 vezes.", s:25},
+    {t:"Letra L (invertido)", d:"Deslize da direita do bebê para a esquerda, logo abaixo das costelas, e desça. 6 vezes.", s:30},
+    {t:"Letra U (invertido)", d:"Suba pelo lado direito do bebê, atravesse acima do umbigo e desça pelo lado esquerdo. 6 vezes.", s:35},
+    {t:"Bicicletinha", d:"Segure as perninhas e pedale devagar, levando um joelho de cada vez em direção à barriga.", s:40},
+    {t:"Joelhos na barriga", d:"Leve os dois joelhos juntos à barriga e segure 5 segundos. Solte. Repita 4 vezes.", s:30},
+    {t:"Colo de tigre", d:"Para terminar, deite o bebê de bruços no seu antebraço, com a mão apoiando a barriguinha.", s:40}
+   ]},
+  {id:"respira", titulo:"Massagem para respirar", sub:"Peito e costas com o {p:respira}", produto:"respira", para:"bebe", cor:"respira",
+   antes:"Antes, limpe o nariz com soro fisiológico. Ambiente sem correntes de ar.",
+   passos:[
+    {t:"Aplique o {p:respira}", d:"Passe o roll-on no peito e nas costas, conforme o modo de uso do rótulo.", s:20},
+    {t:"Coração aberto", d:"Mãos no centro do peito, abra para os lados e volte pelas laterais. Movimento lento.", s:45},
+    {t:"Costas", d:"Com o bebê de bruços no seu colo, deslize as mãos da nuca até o bumbum, alternando.", s:45},
+    {t:"Tapinhas leves", d:"Com a mão em concha, dê tapinhas bem suaves nas costas, de baixo para cima.", s:30},
+    {t:"Posição elevada no colo", d:"Fique alguns minutos com o bebê mais em pé no colo. Ajuda a respirar melhor.", s:60}
+   ]},
+  {id:"mamae", titulo:"2 minutos para você", sub:"Respiração com o {p:mamae}", produto:"mamae", para:"mae", cor:"mamae",
+   antes:"Sente num lugar confortável. Se o bebê estiver seguro, pode ser agora.",
+   passos:[
+    {t:"Aplique o {p:mamae}", d:"Passe o roll-on nos pulsos e na nuca. Esfregue os pulsos devagar.", s:20},
+    {t:"Mãos no rosto", d:"Leve os pulsos perto do nariz, feche os olhos e respire o aroma 3 vezes.", s:25},
+    {t:"Respiração 4–6", d:"Inspire contando 4, solte o ar contando 6. O círculo guia você.", s:60, respira:true},
+    {t:"Ombros", d:"Suba os ombros até as orelhas, segure e solte. 3 vezes.", s:20},
+    {t:"Uma frase para você", d:"Você está fazendo o melhor que pode. E isso é suficiente.", s:15}
+   ]}
+];
+
+/* Os 5 S (para o choro) */
+const CINCO_S = [
+  {t:"Swaddle (charutinho)", d:"Enrole o bebê na manta com os braços junto ao corpo, deixando os quadris soltos. Pare de enrolar quando ele começar a tentar rolar."},
+  {t:"Side (de lado no colo)", d:"Segure o bebê de lado ou de bruços no seu colo. Só no colo: para dormir, sempre de barriga para cima."},
+  {t:"Shush (shhh)", d:"Faça “shhh” perto do ouvido, mais alto que o choro, e vá baixando. Ou ligue o som Shhh do app."},
+  {t:"Swing (balanço)", d:"Balanço curto e ritmado, apoiando bem a cabeça. Nunca chacoalhe o bebê."},
+  {t:"Suck (sucção)", d:"Ofereça o peito ou a chupeta. Sugar acalma."}
+];
+const CHECK_CHORO = ["Fome? Já faz mais de 2 horas da última mamada?","Fralda suja ou molhada?","Calor ou frio? Toque a nuca: deve estar morna, sem suor.","Precisa arrotar?","Sono demais? Passou da janela de sono?","Cólica? Barriga dura, perninhas encolhidas."];
+
+/* Quando procurar o pediatra ou o pronto-socorro */
+const ALERTAS = [
+  {t:"Febre", d:"Em bebês com menos de 3 meses, qualquer temperatura de 37,8 °C ou mais é motivo para procurar atendimento no mesmo dia."},
+  {t:"Dificuldade para respirar", d:"Respiração muito rápida, costelas “afundando”, gemido a cada respiração, lábios ou pele arroxeados: procure o pronto-socorro."},
+  {t:"Bebê molinho ou difícil de acordar", d:"Muito sonolento, sem força para mamar ou sem reação: procure atendimento imediatamente."},
+  {t:"Recusa de mamar e poucas fraldas", d:"Menos de 5 a 6 fraldas molhadas por dia, boca seca ou moleira afundada podem ser desidratação."},
+  {t:"Vômito em jato ou verde", d:"Vômitos fortes e repetidos, verdes ou com sangue precisam de avaliação."},
+  {t:"Sangue nas fezes", d:"Rajas de sangue ou fezes muito escuras: fale com o pediatra."},
+  {t:"Choro inconsolável diferente", d:"Choro agudo, sem parar por horas e diferente do habitual, especialmente com outros sinais."},
+  {t:"Pele amarelada que aumenta", d:"Icterícia que se espalha para barriga e pernas, ou que aparece depois da 2ª semana."},
+  {t:"Manchas que não somem ao apertar", d:"Manchas roxas ou vermelhas que não clareiam ao pressionar: procure atendimento já."}
+];
+
+/* Guias por dor */
+const GUIAS = [
+  {id:"sono", titulo:"Sono", sub:"Ritual, ambiente e janelas de sono", ic:"moon", cor:"dormir", produto:"dormir", secoes:[
+    {h:"O que é normal", itens:["Recém-nascidos dormem de 14 a 17 horas por dia, mas em blocos curtos de 2 a 4 horas.","Trocar o dia pela noite nas primeiras semanas é comum. O relógio biológico amadurece por volta dos 3 meses.","Acordar para mamar de madrugada é necessário no início, não é “mau hábito”."]},
+    {h:"Ambiente", itens:["Apague ou diminua as luzes 30 a 60 minutos antes de dormir.","Nas mamadas da madrugada, use luz fraca e quente (âmbar ou vermelha). O Modo Noite do app serve para isso.","Ruído branco em volume baixo, como um chuveiro ligado, e longe do berço.","Temperatura entre 20 e 22 °C, com roupa leve."]},
+    {h:"Rotina", itens:["Faça o ritual sempre na mesma ordem: luz baixa, banho, massagem com o {p:dormir}, pijama, mamada, som e berço.","De dia: casa clara e barulho normal. À noite: escuro, silêncio e pouca conversa.","Respeite a janela de sono. Passou do ponto, o bebê fica agitado e dorme pior.","Sempre que der, coloque no berço sonolento, mas ainda acordado."]},
+    {h:"Sono seguro", itens:["Sempre de barriga para cima, em colchão firme.","Berço vazio: sem travesseiro, protetor, bichinhos ou mantas soltas.","De preferência no quarto dos pais, mas no berço do bebê."]}
+  ]},
+  {id:"colica", titulo:"Cólica e gases", sub:"Massagem, posições e o que é normal", ic:"tummy", cor:"colic", produto:"colic", secoes:[
+    {h:"O que é normal", itens:["A cólica costuma começar por volta da 2ª ou 3ª semana, tem pico perto da 6ª e melhora até os 3 ou 4 meses.","O choro costuma piorar no fim da tarde e à noite.","Sinais: barriga dura, perninhas encolhidas, rosto vermelho e choro forte."]},
+    {h:"O que ajuda", itens:["Massagem I Love You com o {p:colic}, 30 a 45 minutos depois da mamada. Tem o passo a passo guiado no app.","Bicicletinha e joelhos na barriga para ajudar a soltar os gases.","Compressa morna na barriga (fralda passada a ferro, sempre testada no seu pulso).","Colo de tigre: bebê de bruços no seu antebraço, com a mão apoiando a barriga.","Contato pele a pele e balanço suave.","Fazer arrotar durante e depois de cada mamada."]},
+    {h:"Fique de olho", itens:["Febre, vômito em jato, sangue nas fezes ou recusa de mamar não são cólica comum: procure o pediatra.","Registre os episódios no Diário. Ver a evolução semana a semana ajuda você e o pediatra."]}
+  ]},
+  {id:"refluxo", titulo:"Refluxo e golfadas", sub:"Depois da mamada e na hora de dormir", ic:"drop", cor:"colic", produto:"colic", secoes:[
+    {h:"O que é normal", itens:["Golfar depois de mamar é muito comum nos primeiros meses e costuma melhorar até perto de 1 ano.","Se o bebê ganha peso e está bem, geralmente é refluxo fisiológico."]},
+    {h:"O que ajuda", itens:["Mantenha o bebê em pé no colo por 20 a 30 minutos depois de mamar.","Mamadas menores e mais frequentes.","Faça arrotar no meio e no fim da mamada.","Evite roupa ou fralda apertando a barriga logo após mamar.","Confira a pega: engolir ar piora o refluxo."]},
+    {h:"Para dormir", itens:["Mesmo com refluxo, o bebê deve dormir de barriga para cima, em superfície plana, salvo orientação médica.","Não use travesseiros ou rolinhos para inclinar o bebê no berço."]},
+    {h:"Procure o pediatra se", itens:["Vômitos em jato, verdes ou com sangue.","Baixo ganho de peso, recusa de mamar ou choro intenso ao mamar."]}
+  ]},
+  {id:"nariz", titulo:"Nariz entupido e resfriado", sub:"Soro, vapor e massagem", ic:"nose", cor:"respira", produto:"respira", secoes:[
+    {h:"O que ajuda", itens:["Soro fisiológico no nariz antes das mamadas e antes de dormir.","Aspirador nasal suave depois do soro.","Vapor do chuveiro: fique com o bebê no banheiro fechado com o chuveiro quente ligado por alguns minutos.","Umidificador no quarto em dias secos.","Mais mamadas para manter o bebê hidratado.","Massagem no peito e nas costas com o {p:respira}, conforme o rótulo."]},
+    {h:"Procure o pediatra se", itens:["Febre em bebê com menos de 3 meses.","Respiração rápida, costelas afundando ou gemido.","Recusa de mamar ou poucas fraldas molhadas."]}
+  ]},
+  {id:"choro", titulo:"Choro: o que fazer", sub:"Checklist e os 5 S", ic:"cry", cor:"dormir", secoes:[
+    {h:"Antes de tudo, confira", itens:CHECK_CHORO},
+    {h:"Os 5 S para acalmar", itens:CINCO_S.map(x=>x.t+": "+x.d)},
+    {h:"Se você estiver no limite", itens:["Coloque o bebê no berço, em segurança, e saia do quarto por alguns minutos para respirar.","Peça ajuda para alguém assumir por um tempo.","Nunca chacoalhe o bebê."]}
+  ]},
+  {id:"amamentacao", titulo:"Amamentação", sub:"Pega, frequência e cuidados", ic:"bottle", cor:"mamae", secoes:[
+    {h:"O que é normal", itens:["Nas primeiras semanas, o bebê mama de 8 a 12 vezes por dia, inclusive de madrugada.","Mamar com frequência maior em alguns dias pode ser pico de crescimento.","Sinais de que está mamando bem: 5 a 6 fraldas molhadas por dia, ganho de peso e bebê tranquilo após mamar."]},
+    {h:"Pega", itens:["Boca bem aberta, pegando boa parte da aréola, lábios virados para fora.","Barriga do bebê encostada na sua barriga.","Se doer durante toda a mamada, retire o peito com o dedo mínimo no canto da boca e reposicione."]},
+    {h:"Cuidados com você", itens:["Comece a próxima mamada pelo peito em que terminou a anterior. O Diário lembra qual foi.","Deixe água e um lanche perto do lugar onde amamenta.","Rachaduras, peito empedrado, vermelhidão ou febre: procure o banco de leite ou seu médico."]}
+  ]},
+  {id:"seguro", titulo:"Sono seguro", sub:"Regras que valem para toda noite", ic:"shield", cor:"respira", secoes:[
+    {h:"Sempre", itens:["De barriga para cima, em todos os sonos, de dia e de noite.","Colchão firme, com lençol bem ajustado.","Berço vazio: sem travesseiro, protetor, bichinhos ou mantas soltas.","Sem cobrir a cabeça e sem roupas quentes demais.","Ambiente sem fumaça de cigarro."]},
+    {h:"Evite", itens:["Dormir com o bebê no sofá ou na poltrona.","Deixar o bebê dormir em almofadas de amamentação ou superfícies inclinadas.","Charutinho depois que o bebê começa a tentar rolar."]}
+  ]},
+  {id:"mae", titulo:"Para você, mamãe", sub:"Descanso, ajuda e emoções", ic:"heart", cor:"mamae", produto:"mamae", secoes:[
+    {h:"Descanso", itens:["Durma quando o bebê dormir pelo menos uma vez por dia.","Divida as madrugadas: se houver leite ordenhado ou fórmula, outra pessoa pode assumir uma mamada.","Diga sim para quem oferece ajuda: comida, roupa, casa."]},
+    {h:"Emoções", itens:["Choro fácil e oscilação de humor nas primeiras 2 semanas (baby blues) são comuns.","Se a tristeza for intensa ou durar mais de 2 semanas, converse com seu médico. Isso tem tratamento.","Se você tiver pensamentos de se machucar ou de que não consegue cuidar do bebê, procure ajuda agora: CVV 188 (24 horas, gratuito) ou o pronto-socorro."]},
+    {h:"5 minutos por dia", itens:["Um banho demorado, uma música, respirar ao ar livre.","A respiração guiada da aba Mamãe leva 2 minutos.","Menos redes sociais e menos palpites: escolha 1 ou 2 fontes de confiança, como o pediatra."]}
+  ]}
+];
+
+/* Semana a semana (idade do bebê em semanas). Depois de 12 semanas, por mês. */
+const SEMANAS = [
+  {de:0, ate:0, titulo:"Primeira semana", itens:["Dorme de 16 a 18 horas por dia, em blocos curtos.","Mama de 8 a 12 vezes por dia. Perder até 10% do peso nos primeiros dias é esperado.","O coto do umbigo cai entre 1 e 2 semanas. Mantenha seco e limpo.","Pele um pouco amarelada é comum. Se aumentar ou chegar às pernas, avise o pediatra."]},
+  {de:1, ate:1, titulo:"Segunda semana", itens:["O bebê costuma recuperar o peso de nascimento.","Pode haver um pico de crescimento: mais mamadas por 1 ou 2 dias.","Para você: o baby blues costuma passar até o fim desta semana."]},
+  {de:2, ate:2, titulo:"Terceira semana", itens:["Em muitos bebês, as cólicas começam agora.","O choro tende a aumentar no fim da tarde. É uma fase.","Comece a diferenciar dia (claro e barulho normal) e noite (escuro e silêncio)."]},
+  {de:3, ate:3, titulo:"Quarta semana", itens:["O bebê fixa o olhar em rostos a 20 ou 30 cm.","Janela de sono ainda curta: de 35 a 60 minutos acordado.","O ritual da noite começa a fazer mais efeito com a repetição."]},
+  {de:4, ate:4, titulo:"Quinta semana", itens:["Fica mais tempo acordado e atento.","Tempo de barriguinha para baixo, acordado e com você olhando, ajuda a fortalecer o pescoço."]},
+  {de:5, ate:5, titulo:"Sexta semana", itens:["É o pico do choro e das cólicas em muitos bebês. Vai melhorar.","Os primeiros sorrisos sociais costumam aparecer.","Consulta e vacinas dos 2 meses estão chegando: confira a caderneta."]},
+  {de:6, ate:7, titulo:"Semanas 7 e 8", itens:["Sorrisos, sons e mais interação.","Vacinas dos 2 meses: o bebê pode ficar mais sonolento ou irritado por 1 ou 2 dias.","Para muitos, as cólicas começam a ceder."]},
+  {de:8, ate:9, titulo:"Semanas 9 e 10", itens:["Pode começar a dormir um bloco maior à noite, de 4 a 5 horas.","Descobre as mãos e leva tudo à boca.","Janela de sono de 1 hora a 1 hora e meia."]},
+  {de:10, ate:12, titulo:"Semanas 11 a 13", itens:["As cólicas costumam melhorar bastante até os 3 ou 4 meses.","Sustenta melhor a cabeça.","O relógio biológico amadurece: rotina de dia e noite fica mais clara."]},
+  {de:13, ate:17, titulo:"4 meses", itens:["Fase conhecida como “regressão dos 4 meses”: o sono pode piorar por um tempo. Mantenha o ritual.","Começa a rolar: pare de usar o charutinho.","Janela de sono de 1h15 a 2 horas."]},
+  {de:18, ate:21, titulo:"5 meses", itens:["Mais curioso, se distrai nas mamadas. Mamar em ambiente calmo ajuda.","Sonecas mais organizadas: geralmente 3 ou 4 por dia."]},
+  {de:22, ate:26, titulo:"6 meses", itens:["Início da introdução alimentar, conforme orientação do pediatra.","Pode sentar com apoio.","Janela de sono de cerca de 2 horas."]},
+  {de:27, ate:35, titulo:"7 e 8 meses", itens:["Ansiedade de separação: estranha pessoas e chora quando você sai. É esperado.","Rituais curtos de despedida e de sono dão segurança."]},
+  {de:36, ate:60, titulo:"9 a 12 meses", itens:["Engatinha, fica em pé com apoio, primeiras palavras.","Geralmente 2 sonecas por dia.","O ritual da noite continua sendo o melhor aliado do sono."]}
+];
+
+/* Dicas do dia (uma por dia, priorizando as dores escolhidas) */
+const DICAS = [
+  {d:"sono", t:"Luz de madrugada", x:"Nas mamadas da noite, use o Modo Noite: luz vermelha bem fraca não “acorda” o cérebro do bebê."},
+  {d:"sono", t:"Mesmo som, todo dia", x:"Usar sempre o mesmo som na hora de dormir cria uma associação: som ligado = hora de dormir."},
+  {d:"sono", t:"Janela de sono", x:"Bocejos, olhar parado e esfregar os olhos são sinais de sono. Comece o ritual antes do choro."},
+  {d:"sono", t:"Dia claro, noite escura", x:"De dia, deixe a casa clara e com barulho normal, inclusive nas sonecas. Ajuda a acertar o relógio."},
+  {d:"sono", t:"Sonolento, não dormindo", x:"Coloque o bebê no berço quando estiver com sono, mas ainda acordado. Aos poucos ele aprende a pegar no sono ali."},
+  {d:"sono", t:"Temperatura", x:"Toque a nuca do bebê: morna e sem suor é o ideal. Mãos e pés frios são normais."},
+  {d:"sono", t:"O ritual funciona com repetição", x:"Os primeiros dias podem não mudar muito. Com uma semana de ritual igual, o bebê começa a reconhecer a sequência."},
+  {d:"colica", t:"Hora da massagem", x:"A massagem para cólica funciona melhor 30 a 45 minutos depois da mamada, não logo em seguida."},
+  {d:"colica", t:"Sentido do relógio", x:"Na barriga, sempre no sentido horário: é o caminho natural do intestino."},
+  {d:"colica", t:"Arroto no meio", x:"Faça o bebê arrotar no meio da mamada, não só no fim. Menos ar, menos gases."},
+  {d:"colica", t:"Colo de tigre", x:"Bebê de bruços no seu antebraço, com a mão na barriga. A pressão suave alivia os gases."},
+  {d:"colica", t:"É uma fase", x:"O pico da cólica costuma ser perto da 6ª semana e melhora até os 3 ou 4 meses."},
+  {d:"refluxo", t:"20 minutos em pé", x:"Depois de mamar, deixe o bebê em pé no colo por 20 a 30 minutos."},
+  {d:"refluxo", t:"Mamadas menores", x:"Mamadas um pouco menores e mais frequentes ajudam quem golfa muito."},
+  {d:"nariz", t:"Soro antes de mamar", x:"Nariz limpo antes da mamada faz o bebê mamar melhor e engolir menos ar."},
+  {d:"nariz", t:"Vapor do banho", x:"Banheiro fechado com o chuveiro quente ligado por alguns minutos ajuda a soltar o nariz."},
+  {d:"choro", t:"Os 5 S", x:"Charutinho, de lado no colo, shhh, balanço e sucção. Use em sequência quando o choro não passa."},
+  {d:"choro", t:"Shhh mais alto que o choro", x:"O “shhh” precisa ser mais alto que o choro no começo. Depois vá baixando."},
+  {d:"choro", t:"Você pode sair um pouco", x:"Se estiver no limite, coloque o bebê seguro no berço e saia por 5 minutos para respirar."},
+  {d:"mae", t:"Durma quando ele dormir", x:"Pelo menos uma soneca por dia junto com o bebê. A casa pode esperar."},
+  {d:"mae", t:"Divida a madrugada", x:"Combine turnos: uma pessoa fica com as mamadas até a 1h, a outra assume depois, quando possível."},
+  {d:"mae", t:"Aceite ajuda", x:"Quando alguém perguntar “precisa de algo?”, responda com um pedido concreto: comida, roupa, 1 hora de sono."},
+  {d:"mae", t:"2 minutos para você", x:"Faça a respiração guiada da aba Mamãe. Respirar devagar acalma você e o bebê sente."},
+  {d:"mae", t:"Sem comparação", x:"Cada bebê tem seu ritmo. O bebê da rede social não é o seu."},
+  {d:"amamentacao", t:"Qual peito?", x:"Registre as mamadas no Diário: o app lembra por qual peito começar."},
+  {d:"amamentacao", t:"Água por perto", x:"Deixe uma garrafa de água e um lanche onde você amamenta."},
+  {d:"seguro", t:"Berço vazio", x:"Nada de travesseiro, protetor ou bichinhos no berço. Barriga para cima, sempre."}
+];
+
+/* Frases de apoio para a mãe */
+const FRASES = [
+  "Você está fazendo um ótimo trabalho, mesmo nos dias em que parece que não.",
+  "Noites difíceis passam. Esta fase também vai passar.",
+  "Pedir ajuda é cuidar do seu bebê também.",
+  "Seu bebê não precisa de uma mãe perfeita. Precisa de você.",
+  "Descansar não é egoísmo. É combustível.",
+  "Você conhece seu bebê melhor do que qualquer palpite.",
+  "Um dia de cada vez. Hoje já é suficiente.",
+  "Seu cansaço é real e seu esforço também."
+];
+
+/* Método (aba Guias) */
+const METODO = [
+  {t:"Ambiente", d:"Luz baixa, som constante e temperatura agradável dizem ao corpo do bebê que é hora de desacelerar.", ic:"lamp"},
+  {t:"Ritual", d:"A mesma sequência toda noite. A repetição é o que ensina o bebê a reconhecer a hora de dormir.", ic:"list"},
+  {t:"Toque", d:"A massagem com os óleos da {marca} cria um momento de calma e conexão entre vocês.", ic:"hands"},
+  {t:"Mãe cuidada", d:"Uma mãe mais descansada e tranquila transmite calma. Cuidar de você também faz parte.", ic:"heart"}
+];
+
+</script>
+<script>
+/* ===== núcleo: utilidades, ícones, estado e cálculos ===== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const DAY=864e5, MIN=6e4;
+const P=Object.fromEntries(PRODUTOS.map(p=>[p.id,p]));
+const T=s=>String(s).replace(/\{p:(\w+)\}/g,(_,id)=>P[id]?.nome||id).replace(/\{marca\}/g,MARCA);
+
+/* ícones */
+const IC={
+moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/><path d="M8 7h7"/>',
+heart:'<path d="M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9z"/>',
+diary:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+bag:'<path d="M6 7h12l1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/>',
+left:'<path d="M15 18l-6-6 6-6"/>', right:'<path d="M9 6l6 6-6 6"/>',
+x:'<path d="M6 6l12 12M18 6L6 18"/>',
+play:'<path d="M8 5v14l11-7z" fill="currentColor"/>',
+pause:'<rect x="7" y="5" width="3.5" height="14" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="3.5" height="14" rx="1" fill="currentColor"/>',
+stop:'<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>',
+prev:'<path d="M18 6l-8 6 8 6z" fill="currentColor"/><path d="M6 6v12"/>',
+next:'<path d="M6 6l8 6-8 6z" fill="currentColor"/><path d="M18 6v12"/>',
+plus:'<path d="M12 5v14M5 12h14"/>', minus:'<path d="M5 12h14"/>',
+check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+bell:'<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+upload:'<path d="M12 16V5M7 10l5-5 5 5M5 20h14"/>',
+share:'<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/>',
+trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+drop:'<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+wave:'<path d="M2 10c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/><path d="M2 16c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/>',
+rain:'<path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z"/><path d="M8 18l-1 2M12 18l-1 2M16 18l-1 2"/>',
+fan:'<circle cx="12" cy="12" r="1.8"/><path d="M12 10c0-4 1-7 4-7 2 0 2 3 0 5M14 12c4 0 7 1 7 4 0 2-3 2-5 0M12 14c0 4-1 7-4 7-2 0-2-3 0-5M10 12c-4 0-7-1-7-4 0-2 3-2 5 0"/>',
+music:'<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
+lamp:'<path d="M8 3h8l3 8H5z"/><path d="M12 11v7M8 21h8"/>',
+bath:'<path d="M3 12h18v2a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/><path d="M6 12V6a2 2 0 0 1 4 0"/><path d="M7 19l-1 2M17 19l1 2"/>',
+hands:'<path d="M7 11V6a1.5 1.5 0 0 1 3 0v5M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-2.7L3.5 15a1.5 1.5 0 0 1 2.5-1.7L7 15"/>',
+shirt:'<path d="M8 3l-5 3 2 4 3-1v12h8V9l3 1 2-4-5-3a4 4 0 0 1-8 0z"/>',
+bottle:'<path d="M9 2h6M10 2v3l-2 3v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V8l-2-3V2"/><path d="M8 12h8"/>',
+bed:'<path d="M3 18V6M21 18v-6a3 3 0 0 0-3-3H10v6"/><path d="M3 15h18"/><circle cx="6.5" cy="11" r="2"/>',
+tummy:'<circle cx="12" cy="12" r="9"/><path d="M12 12a1.5 1.5 0 1 1 1.5 1.5A3 3 0 0 1 10.5 10.5 4.5 4.5 0 0 1 15 6"/>',
+wind:'<path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>',
+cry:'<circle cx="12" cy="12" r="9"/><path d="M8.5 16.5c1-1.2 2.2-1.8 3.5-1.8s2.5.6 3.5 1.8"/><path d="M9 9.5h.01M15 9.5h.01"/>',
+shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+alert:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/>',
+gift:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-2-4-6-4-6-1.5S10 8 12 8zM12 8c2-4 6-4 6-1.5S14 8 12 8z"/>',
+chat:'<path d="M4 20l1.5-4A8 8 0 1 1 9 19.5z"/>',
+mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+flame:'<path d="M12 21a7 7 0 0 0 7-7c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-3 3-5 6-5 8a7 7 0 0 0 7 7z"/>',
+chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+baby:'<circle cx="12" cy="12" r="9"/><path d="M9 10.5h.01M15 10.5h.01M9.5 15a3.5 3.5 0 0 0 5 0"/><path d="M12 3c-1 1.5-1 3 1 3"/>',
+sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+list:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+diaper:'<path d="M3 7h18v3a9 9 0 0 1-18 0z"/><path d="M8 7v3M16 7v3"/>',
+shh:'<path d="M7 12h2M13 9c2 1 2 5 0 6M16.5 7c3.5 2 3.5 8 0 10"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/>',
+volume:'<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/>',
+addhome:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 8v6M9 11h6"/>',
+copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+ext:'<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+note:'<path d="M5 4h10l4 4v12H5z"/><path d="M14 4v5h5M8 13h8M8 17h5"/>'
+};
+const ic=(n,c="")=>`<svg class="ic ${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||IC.star}</svg>`;
+const LOGO=`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M33 31A14 14 0 0 1 17 11a14 14 0 1 0 16 20z" fill="#FFE2A0"/><path d="M34 9l1.2 3.3 3.3 1.2-3.3 1.2L34 18l-1.2-3.3-3.3-1.2 3.3-1.2z" fill="#FFF0C8"/><circle cx="39" cy="22" r="1.4" fill="#FFF0C8"/></svg>`;
+
+let _g=0;
+function bottle(id,h=64){ const p=P[id]; if(!p) return ""; const g="g"+(++_g), w=Math.round(h*.38);
+  const nm=esc(p.nome.length>13?p.nome.split(" ")[0]:p.nome);
+  return `<svg class="btl" width="${w}" height="${h}" viewBox="0 0 38 100" aria-hidden="true"><defs><linearGradient id="${g}" x1="0" x2="1"><stop offset="0" stop-color="${p.cor}" stop-opacity=".85"/><stop offset=".45" stop-color="${p.cor}"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient><linearGradient id="${g}c" x1="0" x2="1"><stop offset="0" stop-color="#E9E5F2"/><stop offset=".5" stop-color="#FFFFFF"/><stop offset="1" stop-color="#A9A3BC"/></linearGradient></defs>
+  <rect x="9" y="2" width="20" height="26" rx="5" fill="url(#${g}c)"/><rect x="9" y="2" width="20" height="26" rx="5" fill="${p.cor}" opacity=".35"/>
+  <rect x="7" y="25" width="24" height="72" rx="7" fill="url(#${g})"/><rect x="7" y="25" width="24" height="72" rx="7" fill="${p.cor}" opacity=".35"/>
+  <rect x="10.5" y="30" width="3.5" height="60" rx="1.8" fill="#fff" opacity=".35"/>
+  <text transform="translate(25 90) rotate(-90)" font-size="8" font-weight="900" fill="#fff" font-family="Nunito,system-ui,sans-serif">${nm}</text></svg>`; }
+
+/* datas */
+const pad2=n=>String(n).padStart(2,"0");
+const iso=d=>{d=new Date(d); return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());};
+const parseISO=s=>{const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d);};
+const today=()=>iso(Date.now());
+const addDays=(s,n)=>{const d=parseISO(s); d.setDate(d.getDate()+n); return iso(d);};
+const daysBetween=(a,b)=>Math.round((parseISO(b)-parseISO(a))/DAY);
+const hm=t=>{const d=new Date(t); return pad2(d.getHours())+":"+pad2(d.getMinutes());};
+const fmtDate=s=>{const d=parseISO(s); return pad2(d.getDate())+"/"+pad2(d.getMonth()+1);};
+const DIAS=["dom","seg","ter","qua","qui","sex","sáb"];
+const dur=ms=>{const m=Math.max(0,Math.round(ms/MIN)); if(m<60) return m+" min"; const h=Math.floor(m/60), r=m%60; return h+"h"+(r?pad2(r):"");};
+const clock=ms=>{const s=Math.max(0,Math.floor(ms/1000)); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+":"+pad2(m):m)+":"+pad2(x);};
+const brl=v=>"R$ "+v.toFixed(2).replace(".",",").replace(/\B(?=(\d{3})+(?!\d))/g,".");
+const plural=(n,s,p)=>n+" "+(n===1?s:(p||s+"s"));
+function nightKey(t=Date.now()){ const d=new Date(t); if(d.getHours()<5) d.setDate(d.getDate()-1); return iso(d); }
+
+/* estado */
+const KEY="noite_tranquila_v1";
+const blank=()=>({v:1,mae:"",bebe:"",nasc:"",dores:[],hora:"19:30",prods:{},ev:[],ativo:{},ritual:{},humor:{},resp:[],checkins:[],notif:false,lemb:{ritual:true,recompra:true,dicas:true},som:{vol:.6,timer:30},criado:Date.now(),onb:false});
+let S;
+function load(){ try{ S=Object.assign(blank(),JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){ S=blank(); } }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+/* bebê */
+function ageDays(){ return S.nasc?Math.max(0,daysBetween(S.nasc,today())):0; }
+function ageWeeks(){ return Math.floor(ageDays()/7); }
+function ageTxt(){ const d=ageDays(); if(!S.nasc) return ""; if(d<7) return d===0?"nasceu hoje":plural(d,"dia");
+  const w=Math.floor(d/7), r=d%7; if(w<13) return plural(w,"semana")+(r?" e "+plural(r,"dia"):"");
+  const n=parseISO(S.nasc), t=new Date(); let m=(t.getFullYear()-n.getFullYear())*12+t.getMonth()-n.getMonth(); if(t.getDate()<n.getDate()) m--;
+  const ref=new Date(n); ref.setMonth(n.getMonth()+m); const ex=Math.floor((t-ref)/DAY/7);
+  return m>=24?plural(Math.floor(m/12),"ano"):plural(m,"mês","meses")+(ex?" e "+plural(ex,"semana"):""); }
+function janela(){ const w=ageWeeks(); return JANELAS.find(j=>w<j.ate)||JANELAS[JANELAS.length-1]; }
+function semanaInfo(){ const w=ageWeeks(); return SEMANAS.find(s=>w>=s.de&&w<=s.ate)||SEMANAS[SEMANAS.length-1]; }
+const bebe=()=>S.bebe||"o bebê";
+const primeiro=s=>(s||"").trim().split(/\s+/)[0]||"";
+
+/* produtos e estoque */
+const owned=()=>PRODUTOS.filter(p=>S.prods[p.id]?.frascos>0);
+const tem=id=>(S.prods[id]?.frascos||0)>0;
+function usosDe(id,since){ return S.ev.filter(e=>e.k==="aplic"&&e.p===id&&(!since||e.t0>=since)).length; }
+function estoque(id){ const p=P[id], s=S.prods[id]; if(!p||!s||!s.frascos) return null;
+  const total=s.frascos*p.aplicacoes, ini=s.inicio||today(), dd=daysBetween(ini,today());
+  const el=dd<0?0:dd+1, logged=usosDe(id,parseISO(ini).getTime());
+  const used=Math.min(total,Math.max(logged,el*p.porDia)), rem=total-used;
+  const remDays=Math.ceil(rem/p.porDia), fim=addDays(today(),Math.max(0,remDays-1)), pedir=addDays(fim,-PRAZO_ENTREGA);
+  return {p,total,used,rem,remDays,fim,pedir,pct:Math.round(used/total*100),urg:remDays<=PRAZO_ENTREGA,acabou:rem<=0,frascos:s.frascos,
+          frascosRest:Math.max(0,Math.ceil(rem/p.aplicacoes)),futuro:dd<0}; }
+function urgentes(){ return owned().map(p=>estoque(p.id)).filter(e=>e&&e.urg).sort((a,b)=>a.remDays-b.remDays); }
+function sugestoes(){ const out=[]; (S.dores||[]).forEach(d=>{ const id=DOR_PRODUTO[d]; if(id&&P[id]&&!tem(id)&&!out.includes(id)) out.push(id); }); return out; }
+
+/* diário */
+function evDia(dayIso,k){ const a=parseISO(dayIso).getTime(), b=a+DAY; return S.ev.filter(e=>(!k||e.k===k)&&e.t0>=a&&e.t0<b); }
+function sonoDia(dayIso){ const a=parseISO(dayIso).getTime(), b=a+DAY; let ms=0;
+  S.ev.filter(e=>e.k==="sono"&&e.t1).forEach(e=>{ const s=Math.max(a,e.t0), f=Math.min(b,e.t1); if(f>s) ms+=f-s; });
+  if(S.ativo.sono){ const s=Math.max(a,S.ativo.sono.t0), f=Math.min(b,Date.now()); if(f>s) ms+=f-s; }
+  return ms; }
+function colicaDia(dayIso){ return evDia(dayIso,"colica").reduce((s,e)=>s+((e.t1||Date.now())-e.t0),0); }
+function ultimo(k){ return S.ev.filter(e=>e.k===k).sort((a,b)=>b.t0-a.t0)[0]; }
+function ultimaAcordada(){ if(S.ativo.sono) return null; const s=S.ev.filter(e=>e.k==="sono"&&e.t1).sort((a,b)=>b.t1-a.t1)[0]; const t=Math.max(s?s.t1:0,S.acordou||0); return t||null; }
+function proxLado(){ const m=ultimo("mamada"); if(!m||!m.lado) return null; return m.lado; }
+
+/* ritual */
+const OBRIG=RITUAL.filter(r=>!r.opcional).map(r=>r.id);
+function ritualHoje(){ return S.ritual[nightKey()]||[]; }
+function ritualOk(k){ const d=S.ritual[k]||[]; return OBRIG.every(id=>d.includes(id)); }
+function noitesSeguidas(){ let n=0, k=nightKey(); if(!ritualOk(k)) k=addDays(k,-1); while(ritualOk(k)){ n++; k=addDays(k,-1); } return n; }
+function noitesTotal(){ return Object.keys(S.ritual).filter(ritualOk).length; }
+
+/* dica do dia */
+function dicaHoje(){ const pref=DICAS.filter(d=>(S.dores||[]).includes(d.d)); const pool=pref.length>=4&&ageDays()%3!==2?pref:DICAS;
+  const n=Math.floor(parseISO(today())/DAY); return pool[n%pool.length]; }
+function fraseHoje(){ return FRASES[Math.floor(parseISO(today())/DAY)%FRASES.length]; }
+function saudacao(){ const h=new Date().getHours(); return h<5?"Boa madrugada":h<12?"Bom dia":h<18?"Boa tarde":"Boa noite"; }
+
+/* links de compra */
+function withUtm(url,content){ try{ const u=new URL(url,location.href); Object.entries(UTM).forEach(([a,b])=>u.searchParams.set(a,b)); if(content) u.searchParams.set("utm_content",content); if(CUPOM&&CUPOM_PARAM) u.searchParams.set(CUPOM_PARAM,CUPOM); return u.toString(); }catch(e){ return url; } }
+function kitDe(k){ return k.de||Object.entries(k.itens).reduce((s,[id,n])=>s+(P[id]?.preco1||0)*n,0); }
+
+/* marcos */
+function badges(){ const apl=S.ev.filter(e=>e.k==="aplic").length, mam=S.ev.filter(e=>e.k==="mamada").length;
+  const dias=new Set(S.ev.map(e=>iso(e.t0))).size, seq=Math.max(noitesSeguidas(),S.maxSeq||0);
+  return [
+   {e:"moon",t:"Primeira noite",s:"1º ritual completo",on:noitesTotal()>=1},
+   {e:"flame",t:"Três noites",s:"3 rituais seguidos",on:seq>=3},
+   {e:"star",t:"Uma semana",s:"7 rituais seguidos",on:seq>=7},
+   {e:"hands",t:"Primeiro toque",s:"1ª massagem guiada",on:apl>=1||(S.massagens||0)>=1},
+   {e:"sparkle",t:"Mãos de fada",s:"10 massagens",on:apl>=10||(S.massagens||0)>=10},
+   {e:"diary",t:"Diário em dia",s:"registros em 3 dias",on:dias>=3},
+   {e:"bottle",t:"Mamadas",s:"20 registradas",on:mam>=20},
+   {e:"heart",t:"Mãe cuidada",s:"5 pausas para você",on:(S.resp||[]).length>=5},
+   {e:"note",t:"Check-in",s:"1º check-in semanal",on:S.checkins.length>=1}
+  ]; }
+
+/* ===== telas ===== */
+let tab="hoje", sub=null, dseg="hoje", OB=null, editing=null;
+
+function topbar(){ const u=urgentes().length;
+  return `<div class="top"><div class="brand"><span class="logo">${LOGO}</span>${esc(APP_NAME)}</div>
+  <button class="topbtn press" data-tab="comprar" aria-label="Comprar">${ic("bag")}${u?'<span class="dot"></span>':""}</button></div>`; }
+
+function nav(){ const it=[["hoje","home","Hoje"],["diario","diary","Diário"],["acalmar","moon","Acalmar"],["guias","book","Guias"],["mamae","heart","Mamãe"]];
+  return `<nav class="nav">${it.map(([id,i,l])=>id==="acalmar"?`<button class="mid ${tab===id?"on":""}" data-tab="${id}"><span class="mb">${ic(i)}</span>${l}</button>`:`<button class="${tab===id?"on":""}" data-tab="${id}">${ic(i)}${l}</button>`).join("")}</nav>`; }
+
+/* ---------- HOJE ---------- */
+function weekBadge(){ if(!S.nasc) return `<div class="wn"><b>–</b><small>semana</small></div>`; const w=ageWeeks();
+  if(w<13) return `<div class="wn"><b>${w+1}</b><small>semana</small></div>`; const m=Math.max(3,Math.floor(ageDays()/30.44));
+  return `<div class="wn"><b>${m}</b><small>${m===1?"mês":"meses"}</small></div>`; }
+function stockCard(e){ const p=e.p;
+  const t=e.acabou?`Seu ${esc(p.nome)} acabou`:`Faltam ${plural(e.remDays,"dia")} de ${esc(p.nome)}`;
+  return `<button class="stock press urg" data-goto="comprar">${bottle(p.id,54)}<div class="tx"><small>Hora de garantir o próximo</small><b>${t}</b><span class="s">${e.acabou?"Peça agora para não interromper o ritual":"Peça agora para chegar a tempo"}</span><div class="bar"><i style="width:${e.pct}%"></i></div></div><span class="go">Comprar</span></button>`; }
+
+function napCard(){ const j=janela();
+  if(S.ativo.sono){ return `<div class="card"><div class="nap"><span class="nap-ic">${ic("moon")}</span><div class="grow"><small class="muted b">${esc(bebe())} está dormindo</small><div class="big" data-since="${S.ativo.sono.t0}">${clock(Date.now()-S.ativo.sono.t0)}</div></div><button class="cta sm press" data-act="sono">Acordou</button></div></div>`; }
+  const w=ultimaAcordada();
+  if(!w||Date.now()-w>6*3600e3) return `<div class="card"><div class="nap"><span class="nap-ic">${ic("clock")}</span><div class="grow"><b>Janela de sono</b><div class="muted small">Com ${esc(ageTxt()||"esta idade")}, ${esc(bebe())} costuma aguentar de ${dur(j.min*MIN)} a ${dur(j.max*MIN)} acordada. Registre quando dormir e acordar para ver o próximo horário.</div></div></div><div class="btns"><button class="tb on press" data-act="sono">Dormiu agora</button><button class="tb press" data-act="acordou-ha">Acordou há pouco</button></div></div>`;
+  const a=w+j.min*MIN, b=w+j.max*MIN, now=Date.now(), pct=Math.min(100,Math.round((now-w)/(j.max*MIN)*100));
+  const msg=now<a?`Próxima soneca entre <b>${hm(a)}</b> e <b>${hm(b)}</b>`:now<=b?`<b>Hora de dormir:</b> comece a acalmar até ${hm(b)}`:`<b>Passou da janela</b> desde ${hm(b)}. Ambiente calmo e escuro ajuda agora.`;
+  return `<div class="card"><div class="nap"><span class="nap-ic">${ic("clock")}</span><div class="grow"><small class="muted b">Acordada há <span data-since-dur="${w}">${dur(now-w)}</span></small><div style="font-size:15.5px;margin-top:2px">${msg}</div><div class="bar"><i style="width:${pct}%;${now>b?"background:linear-gradient(90deg,#F4A04C,#E0732A)":""}"></i></div></div></div><div class="btns"><button class="tb on press" data-act="sono">Dormiu agora</button><button class="tb press" data-tab="acalmar">Sons para dormir</button></div></div>`; }
+
+function noite(){ const h=new Date().getHours(); return h>=17||h<5; }
+function ritualHero(dia){ const d=ritualHoje(), tot=OBRIG.length, ok=OBRIG.filter(i=>d.includes(i)).length, done=ok===tot, seq=noitesSeguidas(), C=2*Math.PI*26;
+  const steps=RITUAL.map(r=>{ const on=d.includes(r.id), prodOk=!r.produto||tem(r.produto);
+    const go=r.acao?`<span class="go" data-go="${r.acao}">${r.acao.startsWith("massagem")?(prodOk?"Guiado":"Ver"):r.acao==="noite"?"Modo Noite":"Sons"}</span>`:"";
+    return `<button class="step press ${on?"on":""}" data-rit="${r.id}"><span class="ck">${on?ic("check"):""}</span><span class="grow"><span class="st">${esc(T(r.t))}${r.opcional?' <small style="opacity:.7;font-weight:700">(opcional)</small>':""}</span><span class="ss" style="display:block">${esc(T(r.s))}</span></span>${go}</button>`; }).join("");
+  return `<div class="hero"><div class="ritual-head"><div class="ring"><svg viewBox="0 0 62 62"><circle cx="31" cy="31" r="26" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="6"/><circle cx="31" cy="31" r="26" fill="none" stroke="#FFE2A0" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-ok/tot)}"/></svg><b>${ok}/${tot}</b></div>
+  <div class="grow"><h2>Ritual da noite</h2><div class="sub">Começa às ${esc(S.hora)}${seq?` · ${ic("flame")} ${plural(seq,"noite")} seguida${seq>1?"s":""}`:""}</div></div></div>
+  ${dia&&!ok?`<details style="position:relative;z-index:1;margin-top:10px"><summary style="cursor:pointer;font-weight:800;font-size:14px;opacity:.9">Ver os ${RITUAL.length} passos de hoje à noite</summary><div class="steps">${steps}</div></details>`:done?`<div class="done-banner">${ic("star")} Ritual completo. Boa noite para vocês!</div><details style="position:relative;z-index:1;margin-top:8px"><summary style="cursor:pointer;font-weight:800;font-size:14px;opacity:.85">Ver passos</summary><div class="steps">${steps}</div></details>`:`<div class="steps">${steps}</div>`}</div>`; }
+
+function quickGrid(){ const a=S.ativo;
+  return `<div class="quick">
+  <button class="qb press ${a.mamada?"live":""}" data-act="q-mamada"><span class="qi c-mam">${ic("bottle")}</span>Mamada</button>
+  <button class="qb press ${a.sono?"live":""}" data-act="sono"><span class="qi c-sono">${ic("moon")}</span>${a.sono?"Acordou":"Dormiu"}</button>
+  <button class="qb press" data-act="q-fralda"><span class="qi c-fra">${ic("diaper")}</span>Fralda</button>
+  <button class="qb press ${a.colica?"live":""}" data-act="colica"><span class="qi c-col">${ic("tummy")}</span>${a.colica?"Passou":"Cólica"}</button></div>`; }
+
+function upsCard(id){ const p=P[id]; const why={dormir:"Para o ritual da noite",colic:"Para as cólicas e gases",respira:"Para o nariz entupido",mamae:"Para você, mamãe"}[id]||"Para a rotina";
+  return `<button class="ups press" data-buyone="${id}">${bottle(id,58)}<div class="grow"><small>${why}</small><b>Conheça o ${esc(p.nome)}</b><p>${esc(p.desc)}</p></div>${ic("right","muted")}</button>`; }
+
+function resumoHoje(){ const d=today(), m=evDia(d,"mamada").length, f=evDia(d,"fralda").length, s=sonoDia(d);
+  return `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><b>Hoje</b><button class="link small" data-tab="diario">Abrir diário</button></div>
+  <div class="stats"><div class="stat"><b>${m}</b><small>mamadas</small></div><div class="stat"><b>${s?dur(s):"0"}</b><small>de sono</small></div><div class="stat"><b>${f}</b><small>fraldas</small></div></div></div>`; }
+
+function miniProds(){ const o=owned(); if(!o.length) return "";
+  return `<div class="sec"><h2>Seus produtos</h2><button data-tab="comprar">Ver kits</button></div><div class="minis">${o.map(p=>{ const e=estoque(p.id);
+    return `<button class="mini press" data-goto="comprar"><div class="row" style="align-items:flex-end;gap:8px">${bottle(p.id,46)}<span class="pill ${e.urg?"warn":"ok"}">${e.acabou?"acabou":e.remDays+"d"}</span></div><b>${esc(p.nome)}</b><small>${e.futuro?"Começa "+fmtDate(S.prods[p.id].inicio):e.acabou?"Hora de repor":"até "+fmtDate(e.fim)}</small><div class="bar"><i style="width:${e.pct}%"></i></div></button>`; }).join("")}</div>`; }
+
+function hoje(){ const sem=semanaInfo(), dica=dicaHoje(), sg=sugestoes();
+  return `${topbar()}<div class="hello"><small>${saudacao()}, ${esc(primeiro(S.mae))}</small><h1>${esc(S.bebe||"Seu bebê")}</h1>${S.nasc?`<p>${esc(ageTxt())}</p>`:""}</div>
+  ${urgentes().map(stockCard).join("")}
+  ${noite()?ritualHero()+napCard():napCard()+ritualHero(true)}
+  <div class="sec" style="margin-top:20px"><h2>Registrar</h2></div>${quickGrid()}
+  ${sg.slice(0,1).map(upsCard).join("")}
+  ${resumoHoje()}
+  <div class="card"><div class="tip"><span class="ti">${ic("sparkle")}</span><div><small class="muted b" style="font-size:12px;text-transform:uppercase;letter-spacing:.4px">Dica do dia</small><b>${esc(dica.t)}</b><p>${esc(T(dica.x))}</p></div></div></div>
+  <button class="card press" style="display:block;width:calc(100% - 36px);text-align:left" data-sub="semanas"><div class="week">${weekBadge()}<div class="grow"><b>${esc(sem.titulo)}</b><div class="muted small" style="margin-top:2px">${esc(sem.itens[0])}</div><span class="link small">Ver o que esperar</span></div></div></button>
+  ${miniProds()}
+  <p class="trust">Este app não substitui o acompanhamento pediátrico. Em caso de dúvida ou sinal de alerta, procure o pediatra.<br><button class="link" data-sub="alertas">Quando procurar o pediatra</button></p>`; }
+
+/* ---------- DIÁRIO ---------- */
+function evIcon(k){ return {mamada:["bottle","c-mam"],sono:["moon","c-sono"],fralda:["diaper","c-fra"],colica:["tummy","c-col"],aplic:["drop","c-apl"]}[k]; }
+function evTxt(e){ if(e.k==="mamada") return ["Mamada"+(e.lado?" · "+(e.lado==="E"?"Esquerdo":e.lado==="D"?"Direito":"Mamadeira"):""), e.t1?dur(e.t1-e.t0):"em andamento"];
+  if(e.k==="sono") return ["Sono", e.t1?dur(e.t1-e.t0)+" · até "+hm(e.t1):"dormindo"];
+  if(e.k==="fralda") return ["Fralda", {xixi:"Xixi",coco:"Cocô",ambos:"Xixi e cocô"}[e.tipo]||""];
+  if(e.k==="colica") return ["Cólica", e.t1?dur(e.t1-e.t0):"em andamento"];
+  if(e.k==="aplic") return [P[e.p]?.nome||"Aplicação","aplicação"]; return [e.k,""]; }
+function timeline(dayIso){ const L=evDia(dayIso).sort((a,b)=>b.t0-a.t0);
+  if(!L.length) return `<div class="empty">Nenhum registro ainda hoje.<br>Use os botões acima para começar.</div>`;
+  return L.map(e=>{ const [i,c]=evIcon(e.k), [t,s]=evTxt(e); return `<div class="tli"><span class="qi ${c}">${ic(i)}</span><div class="grow"><b>${esc(t)}</b><small>${esc(s)}</small></div><time>${hm(e.t0)}</time><button class="del" data-del="${e.id}" aria-label="Apagar">${ic("x")}</button></div>`; }).join(""); }
+
+function diarioHoje(){ const a=S.ativo, d=today(), lm=ultimo("mamada"), nx=proxLado(), nl=nx==="E"?"D":nx==="D"?"E":null;
+  const mam=a.mamada?`<div class="row" style="margin-top:10px"><div class="grow"><small class="muted b">Lado ${a.mamada.lado==="E"?"esquerdo":a.mamada.lado==="D"?"direito":"mamadeira"}</small><div class="timer" data-since="${a.mamada.t0}">${clock(Date.now()-a.mamada.t0)}</div></div></div><div class="btns">${a.mamada.lado!=="M"?`<button class="tb press" data-act="trocar">Trocar lado</button>`:""}<button class="tb stop press" data-act="mam-stop">Terminar</button></div>`
+   :`<div class="muted small" style="margin-top:8px">${lm?`Última há <b>${dur(Date.now()-(lm.t1||lm.t0))}</b>${nl?` · comece pelo <b>${nl==="E"?"esquerdo":"direito"}</b>`:""}`:"Toque no lado para iniciar o cronômetro."}</div><div class="btns"><button class="tb ${nl==="E"?"on":""} press" data-mam="E">Esquerdo</button><button class="tb ${nl==="D"?"on":""} press" data-mam="D">Direito</button><button class="tb alt press" data-mam="M">Mamadeira</button></div>`;
+  const ac=ultimaAcordada();
+  const sono=a.sono?`<div class="row" style="margin-top:10px"><div class="grow"><small class="muted b">Dormindo desde ${hm(a.sono.t0)}</small><div class="timer" data-since="${a.sono.t0}">${clock(Date.now()-a.sono.t0)}</div></div></div><div class="btns"><button class="tb stop press" data-act="sono">Acordou</button></div>`
+   :`<div class="muted small" style="margin-top:8px">${ac?`Acordada há <b>${dur(Date.now()-ac)}</b>`:"Registre os sonos para ver a janela de sono."} · hoje: <b>${dur(sonoDia(d))}</b></div><div class="btns"><button class="tb on press" data-act="sono">Dormiu agora</button></div>`;
+  const col=a.colica?`<div class="row" style="margin-top:10px"><div class="grow"><small class="muted b">Desde ${hm(a.colica.t0)}</small><div class="timer" data-since="${a.colica.t0}">${clock(Date.now()-a.colica.t0)}</div></div></div><div class="btns"><button class="tb press" data-go="massagem:colica">Massagem guiada</button><button class="tb stop press" data-act="colica">Passou</button></div>`
+   :`<div class="muted small" style="margin-top:8px">Hoje: <b>${evDia(d,"colica").length}</b> episódio(s) · ${dur(colicaDia(d))}</div><div class="btns"><button class="tb press" data-act="colica">Começou uma crise</button></div>`;
+  const o=owned();
+  return `<div class="tracker">
+  <div class="trk"><div class="trk-h"><span class="qi c-mam">${ic("bottle")}</span><div class="grow"><b>Mamada</b><small>Hoje: ${evDia(d,"mamada").length}</small></div></div>${mam}</div>
+  <div class="trk"><div class="trk-h"><span class="qi c-sono">${ic("moon")}</span><div class="grow"><b>Sono</b><small>Janela: ${dur(janela().min*MIN)} a ${dur(janela().max*MIN)} acordada</small></div></div>${sono}</div>
+  <div class="trk"><div class="trk-h"><span class="qi c-fra">${ic("diaper")}</span><div class="grow"><b>Fraldas</b><small>Hoje: ${evDia(d,"fralda").length} · molhadas: ${evDia(d,"fralda").filter(e=>e.tipo!=="coco").length}</small></div></div><div class="btns"><button class="tb press" data-fra="xixi">Xixi</button><button class="tb press" data-fra="coco">Cocô</button><button class="tb press" data-fra="ambos">Os dois</button></div></div>
+  <div class="trk"><div class="trk-h"><span class="qi c-col">${ic("tummy")}</span><div class="grow"><b>Cólica e choro</b><small>Acompanhe se está melhorando</small></div></div>${col}</div>
+  ${o.length?`<div class="trk"><div class="trk-h"><span class="qi c-apl">${ic("drop")}</span><div class="grow"><b>Aplicações</b><small>Registre quando usar os produtos</small></div></div><div class="btns" style="flex-wrap:wrap">${o.map(p=>`<button class="tb press" data-apl="${p.id}" style="flex:1 1 45%">${esc(p.nome)} <small style="opacity:.7">(${evDia(d,"aplic").filter(e=>e.p===p.id).length})</small></button>`).join("")}</div></div>`:""}
+  </div>
+  <div class="sec"><h2>Linha do tempo</h2><button data-sheet="add">+ Adicionar</button></div>
+  <div class="card" style="padding:4px 16px">${timeline(d)}</div>`; }
+
+function bars(vals,labels,color,fmt){ const W=320,H=150,pb=22,pt=18,bw=26,gap=(W-bw*vals.length)/(vals.length+1),mx=Math.max(...vals,1);
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">${vals.map((v,i)=>{ const x=gap+i*(bw+gap), h=Math.max(v?4:2,(H-pb-pt)*v/mx), y=H-pb-h;
+    return `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="7" fill="${color}" opacity="${i===vals.length-1?1:.55}"/>${v?`<text class="v" x="${x+bw/2}" y="${y-5}" text-anchor="middle">${fmt(v)}</text>`:""}<text x="${x+bw/2}" y="${H-6}" text-anchor="middle">${labels[i]}</text>`; }).join("")}</svg>`; }
+
+function diarioSemana(){ const days=[...Array(7)].map((_,i)=>addDays(today(),i-6)), lb=days.map((d,i)=>i===6?"hoje":DIAS[parseISO(d).getDay()]);
+  const sono=days.map(d=>sonoDia(d)/3600e3), mam=days.map(d=>evDia(d,"mamada").length), col=days.map(d=>colicaDia(d)/MIN), fr=days.map(d=>evDia(d,"fralda").length);
+  const cur=[...Array(7)].map((_,i)=>addDays(today(),i-7)), prev=[...Array(7)].map((_,i)=>addDays(today(),i-14)), avg=a=>a.reduce((s,x)=>s+x,0)/a.length;
+  const s1=avg(cur.map(d=>sonoDia(d)/3600e3)), s0=avg(prev.map(d=>sonoDia(d)/3600e3)), c1=avg(cur.map(d=>colicaDia(d)/MIN)), c0=avg(prev.map(d=>colicaDia(d)/MIN));
+  const rit=days.filter(ritualOk).length;
+  const ins=[]; if(s0>0&&s1>0){ const df=s1-s0; ins.push(Math.abs(df)<.25?"O sono ficou estável em relação à semana passada.":df>0?`${esc(bebe())} dormiu em média <b>${dur(df*3600e3)} a mais</b> por dia que na semana passada.`:`O sono caiu ${dur(-df*3600e3)} por dia. Fases assim são comuns: mantenha o ritual.`); }
+  if(c0>0){ ins.push(c1<c0?`As cólicas diminuíram: de ${Math.round(c0)} para <b>${Math.round(c1)} min</b> por dia em média.`:c1>c0?`As cólicas aumentaram esta semana. A massagem guiada ajuda, e se vier com outros sinais, fale com o pediatra.`:""); }
+  return `<div class="card" style="background:linear-gradient(135deg,#6B4ECF,#3F2793);color:#fff"><div class="row"><span style="font-size:26px;color:var(--gold)">${ic("moon")}</span><div class="grow"><b style="font-size:17px">${rit} de 7 noites com ritual completo</b><div style="opacity:.85;font-size:14px">${ins.filter(Boolean).join(" ")||"Continue registrando para ver a evolução semana a semana."}</div></div></div></div>
+  <div class="card"><b>Sono por dia</b><div class="muted small">média de ${dur(s1*3600e3)} nos últimos 7 dias completos</div>${bars(sono,lb,"#7B5CD6",v=>v>=1?Math.round(v)+"h":Math.round(v*60)+"m")}</div>
+  <div class="card"><b>Mamadas por dia</b>${bars(mam,lb,"#D9668F",v=>v)}</div>
+  <div class="card"><b>Cólica (minutos por dia)</b>${bars(col,lb,"#E3A91F",v=>Math.round(v))}</div>
+  <div class="card"><b>Fraldas por dia</b>${bars(fr,lb,"#2A87B8",v=>v)}</div>
+  <div style="margin:0 18px"><button class="cta ghost press" data-sheet="relatorio">${ic("share")} Resumo para o pediatra</button></div>`; }
+
+function diario(){ return `${topbar()}<div class="ptop"><div><h1>Diário</h1><p>Mamadas, sono, fraldas e cólicas de ${esc(bebe())}.</p></div></div>
+  <div class="seg"><button class="${dseg==="hoje"?"on":""}" data-dseg="hoje">Hoje</button><button class="${dseg==="semana"?"on":""}" data-dseg="semana">Semana</button></div>
+  ${dseg==="hoje"?diarioHoje():diarioSemana()}`; }
+
+/* ---------- ACALMAR ---------- */
+function somCard(s){ const on=PL.id===s.id&&PL.playing;
+  return `<button class="som press ${on?"on":""}" data-som="${s.id}"><span class="si">${ic(s.ic)}</span><b>${esc(s.nome)}</b><small>${esc(s.desc)}</small>${on?'<span class="eq"><i></i><i></i><i></i></span>':""}</button>`; }
+function massCard(m){ const secs=m.passos.reduce((s,p)=>s+p.s,0), p=P[m.produto];
+  return `<button class="mass press" data-go="massagem:${m.id}">${p?bottle(p.id,48):`<span class="nap-ic">${ic("hands")}</span>`}<div class="grow"><b>${esc(T(m.titulo))}</b><small>${esc(T(m.sub))}</small></div><span class="dur">${Math.round(secs/60)} min</span></button>`; }
+function acalmar(){ const tim=[15,30,60,0];
+  return `${topbar()}<div class="ptop"><div><h1>Acalmar</h1><p>Sons, luz noturna e massagens guiadas.</p></div></div>
+  <button class="night-cta press" data-act="noite"><span class="ni">${ic("moon")}</span><div class="grow"><b>Modo Noite</b><small>Tela escura ou luz vermelha para as mamadas da madrugada, com som e cronômetro.</small></div>${ic("right")}</button>
+  <button class="sos press" data-sheet="choro"><span class="si">${ic("cry")}</span><div class="grow"><b>Não para de chorar?</b><small>Checklist rápido e os 5 S para acalmar</small></div>${ic("right")}</button>
+  <div class="sec"><h2>Sons para dormir</h2></div><div class="sons">${SONS.filter(s=>s.tipo==="amb").map(somCard).join("")}</div>
+  <div class="sec"><h2>Canções de ninar</h2></div><div class="sons">${SONS.filter(s=>s.tipo==="mus").map(somCard).join("")}</div>
+  <div class="card"><b>Desligar sozinho em</b><div class="tchips" style="margin-top:10px">${tim.map(t=>`<button class="tchip ${S.som.timer===t?"on":""}" data-timer="${t}">${t?t+" min":"Não desligar"}</button>`).join("")}</div>
+  <div class="row" style="margin-top:14px"><span class="muted">${ic("volume")}</span><input class="vol" type="range" min="0.05" max="1" step="0.05" value="${S.som.vol}" data-vol aria-label="Volume"></div>
+  <p class="muted small" style="margin:8px 0 0">Volume baixo, como um chuveiro ligado, e o celular longe do berço.</p></div>
+  <div class="sec"><h2>Massagens guiadas</h2></div>${MASSAGENS.filter(m=>m.para==="bebe").map(massCard).join("")}`; }
+
+/* ---------- GUIAS ---------- */
+const COR_BG={dormir:["#ECE6FD","#6B4ECF"],colic:["#FFF1DA","#C7851A"],respira:["#FDE7E3","#C9452E"],mamae:["#FCE8F0","#C2477A"]};
+function guias(){ if(sub) return guiaSub();
+  const sem=semanaInfo();
+  return `${topbar()}<div class="ptop"><div><h1>Guias</h1><p>O que fazer em cada situação, sem palpite.</p></div></div>
+  <button class="method press" data-sub="metodo"><span class="mi">${ic("layers")}</span><span class="grow"><small>A base da rotina</small><b>Método ${esc(APP_NAME)}</b><em>Os 4 pilares para noites mais calmas</em></span>${ic("right")}</button>
+  <button class="card press" style="display:block;width:calc(100% - 36px);text-align:left" data-sub="semanas"><div class="week">${weekBadge()}<div class="grow"><small class="muted b">Semana a semana</small><b style="display:block">${esc(sem.titulo)}</b><div class="muted small">${esc(sem.itens[0])}</div></div></div></button>
+  <div class="sec"><h2>Por situação</h2></div>
+  <div class="gg">${GUIAS.map(g=>{ const [bg,fg]=COR_BG[g.cor]||COR_BG.dormir; return `<button class="gc press" data-sub="g:${g.id}"><span class="gi" style="background:${bg};color:${fg}">${ic(g.ic==="nose"?"wind":g.ic)}</span><b>${esc(g.titulo)}</b><small>${esc(g.sub)}</small></button>`; }).join("")}</div>
+  <button class="alert-cta press" data-sub="alertas"><span class="ai">${ic("alert")}</span><div class="grow"><b>Quando procurar o pediatra</b><small>Sinais de alerta que não podem esperar</small></div>${ic("right")}</button>`; }
+
+function prodCTA(id,massId){ if(!P[id]) return ""; const p=P[id];
+  if(tem(id)) return `<div class="card" style="background:var(--soft)"><div class="row">${bottle(id,58)}<div class="grow"><b>Use o seu ${esc(p.nome)}</b><div class="muted small">${esc(p.modo)}</div></div></div>${massId?`<button class="cta press" style="margin-top:12px" data-go="massagem:${massId}">${ic("hands")} Fazer a massagem guiada</button>`:""}</div>`;
+  return upsCard(id); }
+
+function guiaSub(){ const back=`<button class="back press" data-back aria-label="Voltar">${ic("left")}</button>`;
+  if(sub==="metodo") return `${topbar()}<div class="ptop">${back}<div><h1>Método ${esc(APP_NAME)}</h1><p>Quatro pilares que, juntos, deixam as noites mais previsíveis.</p></div></div>
+    ${METODO.map((m,i)=>`<div class="card"><div class="row" style="align-items:flex-start"><span class="nap-ic">${ic(m.ic)}</span><div><small class="muted b">Pilar ${i+1}</small><b style="display:block;font-size:17px">${esc(m.t)}</b><p class="muted" style="margin:4px 0 0">${esc(T(m.d))}</p></div></div></div>`).join("")}
+    <div class="sec"><h2>Os produtos na rotina</h2></div>${PRODUTOS.map(p=>`<div class="card flat"><div class="row">${bottle(p.id,56)}<div class="grow"><b>${esc(p.nome)}</b><div class="muted small">${esc(p.desc)}</div><div class="small" style="margin-top:4px"><b>Como usar:</b> ${esc(p.modo)}</div></div></div></div>`).join("")}
+    <p class="trust">Produtos para massagem e aromaterapia. Não substituem medicamentos nem a orientação do pediatra. Use conforme o rótulo.</p>`;
+  if(sub==="semanas"){ const w=ageWeeks();
+    return `${topbar()}<div class="ptop">${back}<div><h1>Semana a semana</h1><p>O que é esperado em cada fase de ${esc(bebe())}.</p></div></div>
+    ${SEMANAS.map(s=>{ const cur=w>=s.de&&w<=s.ate; return `<div class="card ${cur?"":"flat"}" ${cur?'id="semcur" style="outline:2px solid var(--pri)"':""}><div class="row" style="justify-content:space-between"><b style="font-size:17px">${esc(s.titulo)}</b>${cur?'<span class="pill">agora</span>':""}</div><div class="art"><ul>${s.itens.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>`; }).join("")}`; }
+  if(sub==="alertas") return `${topbar()}<div class="ptop">${back}<div><h1>Quando procurar o pediatra</h1><p>Na dúvida, ligue para o pediatra ou procure atendimento. Confie no seu instinto.</p></div></div>
+    <div class="card">${ALERTAS.map(a=>`<div class="alr"><b>${ic("alert")} ${esc(a.t)}</b><p>${esc(a.d)}</p></div>`).join("")}</div>
+    <div class="card care"><b>Emergência</b><p class="muted" style="margin:4px 0 0">SAMU: <a href="tel:192" class="link">192</a>. Em caso de engasgo, dificuldade grave para respirar ou bebê que não reage, ligue imediatamente.</p></div>`;
+  if(sub.startsWith("g:")){ const g=GUIAS.find(x=>x.id===sub.slice(2)); if(!g){ sub=null; return guias(); }
+    const massId={dormir:"sono",colic:"colica",respira:"respira",mamae:"mamae"}[g.produto];
+    return `${topbar()}<div class="ptop">${back}<div><h1>${esc(g.titulo)}</h1><p>${esc(g.sub)}</p></div></div>
+    <div class="card art">${g.secoes.map(s=>`<h3>${esc(s.h)}</h3><ul>${s.itens.map(x=>`<li>${esc(T(x))}</li>`).join("")}</ul>`).join("").replace("<h3>",'<h3 style="margin-top:4px">')}</div>
+    ${g.id==="choro"?`<div style="margin:0 18px"><button class="cta press" data-som="shhh">${ic("shh")} Tocar o som Shhh</button></div>`:""}
+    ${g.produto?prodCTA(g.produto,massId):""}
+    <button class="alert-cta press" data-sub="alertas"><span class="ai">${ic("alert")}</span><div class="grow"><b>Quando procurar o pediatra</b><small>Sinais de alerta</small></div>${ic("right")}</button>`; }
+  sub=null; return guias(); }
+
+/* ---------- MAMÃE ---------- */
+const MOODS=[["😣","Péssima"],["😔","Mal"],["😐","Ok"],["🙂","Bem"],["😊","Ótima"]];
+function precisaCuidado(){ const ks=Object.keys(S.humor).sort().slice(-14); const low=ks.filter(k=>S.humor[k]<=2&&daysBetween(k,today())<=14); return low.length>=3; }
+function mamae(){ const h=S.humor[today()], b=badges(), on=b.filter(x=>x.on).length, lastCk=S.checkins[S.checkins.length-1], ckDue=!lastCk||daysBetween(lastCk.d,today())>=7;
+  return `${topbar()}<div class="hello"><small>Um espaço só seu</small><h1>${esc(primeiro(S.mae)||"Mamãe")}</h1><p>Cuidar de você também é cuidar de ${esc(bebe())}.</p></div>
+  <div class="card"><b>Como você está hoje?</b><div class="moods">${MOODS.map(([e,l],i)=>`<button class="mood press ${h===i+1?"on":""}" data-mood="${i+1}"><span>${e}</span>${l}</button>`).join("")}</div></div>
+  ${precisaCuidado()?`<div class="card care"><b>Você tem registrado dias difíceis</b><p class="muted" style="margin:4px 0 8px">O cansaço do pós-parto é real, e você não precisa passar por isso sozinha. Conversar com seu médico ajuda, e tristeza que dura mais de 2 semanas tem tratamento.</p><p class="small" style="margin:0">Se precisar conversar agora: <a class="link" href="tel:188">CVV 188</a> (24 horas, gratuito).</p></div>`:""}
+  <button class="night-cta press" data-go="respirar" style="background:radial-gradient(130% 140% at 0% 0%,#C2477A 0%,#7A2A5C 60%,#4A1A40 100%)"><span class="ni">${ic("heart")}</span><div class="grow"><b>Respirar 2 minutos</b><small>Uma pausa guiada para baixar o ritmo.</small></div>${ic("right")}</button>
+  ${MASSAGENS.filter(m=>m.para==="mae").map(m=>tem(m.produto)?massCard(m):upsCard(m.produto)).join("")}
+  <div class="card"><small class="muted b" style="text-transform:uppercase;font-size:12px;letter-spacing:.4px">Para hoje</small><p class="quote" style="margin:6px 0 0">“${esc(fraseHoje())}”</p></div>
+  <button class="card press" style="display:flex;gap:12px;align-items:center;width:calc(100% - 36px);text-align:left;${ckDue?"border:1.5px solid #CBBDF3":""}" data-sheet="checkin"><span class="nap-ic">${ic("note")}</span><div class="grow"><b>Check-in semanal</b><div class="muted small">${ckDue?"Disponível agora: 1 minuto para olhar a semana.":"Próximo em "+fmtDate(addDays(lastCk.d,7))+". Toque para ver o último."}</div></div>${ckDue?'<span class="pill">novo</span>':ic("right","muted")}</button>
+  <div class="sec"><h2>Marcos</h2><span>${on} de ${b.length}</span></div>
+  <div class="badges">${b.map(x=>`<div class="badge ${x.on?"on":""}"><div class="bi">${ic(x.e)}</div><b>${x.t}</b><small>${x.s}</small></div>`).join("")}</div>
+  ${!isStandalone()?`<button class="addapp press" data-sheet="instalar"><span class="logo">${LOGO}</span><span class="grow"><b>Adicione o app ao celular</b><small>Na tela inicial, junto dos seus apps</small></span><span class="go">Adicionar</span></button>`:""}
+  <div class="sec"><h2>Ajustes</h2></div>
+  <div class="list">
+   <button class="li press" data-tab="comprar"><span class="lic">${ic("bag")}</span><span><b>Comprar e repor</b><small>Kits e seus produtos</small></span><span class="chev">${ic("right")}</span></button>
+   <button class="li press" data-sheet="produtos"><span class="lic">${ic("bottle")}</span><span><b>Meus produtos</b><small>${owned().length?owned().map(p=>p.nome).join(", "):"Nenhum cadastrado"}</small></span><span class="chev">${ic("right")}</span></button>
+   <button class="li press" data-sheet="dados"><span class="lic">${ic("baby")}</span><span><b>Dados e ritual</b><small>${esc(S.bebe||"Bebê")} · ritual às ${esc(S.hora)}</small></span><span class="chev">${ic("right")}</span></button>
+   ${ONESIGNAL_APP_ID?`<button class="li press" data-sheet="lembretes"><span class="lic">${ic("bell")}</span><span><b>Lembretes</b><small>${S.notif?"Ativados":"Ritual, recompra e dicas"}</small></span><span class="chev">${ic("right")}</span></button>`:""}
+   <button class="li press" data-sheet="backup"><span class="lic">${ic("download")}</span><span><b>Salvar ou restaurar dados</b><small>Para trocar de celular sem perder nada</small></span><span class="chev">${ic("right")}</span></button>
+   ${WHATSAPP?`<a class="li press" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Olá! Vim pelo app "+APP_NAME+".")}" target="_blank" rel="noopener" data-track="suporte_whatsapp"><span class="lic">${ic("chat")}</span><span><b>Falar no WhatsApp</b><small>Tire dúvidas sobre os produtos</small></span><span class="chev">${ic("ext")}</span></a>`:""}
+   ${SUPORTE?`<a class="li press" href="mailto:${esc(SUPORTE)}"><span class="lic">${ic("mail")}</span><span><b>Suporte por e-mail</b><small>${esc(SUPORTE)}</small></span><span class="chev">${ic("ext")}</span></a>`:""}
+   <button class="li press" data-sheet="apagar"><span class="lic" style="background:var(--badb);color:var(--bad)">${ic("trash")}</span><span><b>Apagar meus dados</b><small>Recomeçar do zero</small></span><span class="chev">${ic("right")}</span></button>
+  </div>
+  <p class="trust">${esc(APP_NAME)} · seus dados ficam só neste celular.<br>Este app não substitui o acompanhamento médico.</p>`; }
+
+/* ---------- COMPRAR ---------- */
+function kitCard(k){ const de=kitDe(k), eco=de-k.preco, ids=Object.keys(k.itens);
+  return `<div class="kit ${k.extra==="Mais vendido"?"best":""}">${k.extra?`<span class="flag">${esc(k.extra)}</span>`:""}
+  <div class="kit-top"><div class="kit-pics">${ids.map(id=>bottle(id,62)).join("")}</div><div class="kit-tx"><b>${esc(k.nome)}</b><small>${ids.map(id=>esc(P[id]?.nome)).join(" + ")}</small></div></div>
+  <div class="kit-price"><div class="pp">${eco>0?`<s>${brl(de)}</s>`:""}<b>${esc(k.parcela)}</b><small>ou ${brl(k.preco)} à vista</small></div>${eco>1?`<span class="eco">economize ${brl(eco)}</span>`:""}</div>
+  <a class="cta ${k.extra==="Mais vendido"?"green":""} press" href="${esc(withUtm(k.url,"kit_"+k.id))}" target="_blank" rel="noopener" data-buy="${esc(k.nome)}" data-price="${k.preco}">Comprar ${esc(k.nome)}</a></div>`; }
+function prodBuy(id,mine){ const p=P[id], eco=p.preco1*2-p.preco2, e=mine?estoque(id):null;
+  return `<div class="kit">${mine?`<span class="flag mine">${e&&e.urg?"Repor agora":"Seu produto"}</span>`:""}<div class="kit-top">${bottle(id,64)}<div class="kit-tx"><b>${esc(p.nome)}</b><small>${esc(p.desc)}</small>${e?`<small style="margin-top:3px"><b style="color:${e.urg?"var(--warn)":"var(--ok)"}">${e.acabou?"Acabou":"Dura até "+fmtDate(e.fim)}</b></small>`:""}</div></div>
+  <div class="btns" style="margin-top:14px"><a class="tb press" style="text-decoration:none;display:flex;flex-direction:column;gap:2px" href="${esc(withUtm(p.url1,p.id+"_1un"))}" target="_blank" rel="noopener" data-buy="${esc(p.nome)} 1un" data-price="${p.preco1}"><span>1 unidade</span><small style="font-weight:700">${brl(p.preco1)}</small></a>
+  <a class="tb on press" style="text-decoration:none;display:flex;flex-direction:column;gap:2px" href="${esc(withUtm(p.url2,p.id+"_2un"))}" target="_blank" rel="noopener" data-buy="${esc(p.nome)} 2un" data-price="${p.preco2}"><span>2 unidades</span><small style="font-weight:700">${brl(p.preco2)}${eco>0?" · economize "+brl(eco):""}</small></a></div></div>`; }
+function comprar(){ const o=owned(), es=o.map(p=>estoque(p.id)), urg=es.filter(e=>e.urg), outros=PRODUTOS.filter(p=>!tem(p.id));
+  const first=es.filter(e=>!e.futuro).sort((a,b)=>a.remDays-b.remDays)[0];
+  const msg=!first?"":first.acabou?`<div class="bmsg urg">Seu ${esc(first.p.nome)} acabou. Garanta o próximo para não interromper o ritual.</div>`:first.urg?`<div class="bmsg urg">Peça agora: considerando a entrega, é o momento ideal para não ficar sem ${esc(first.p.nome)}.</div>`:`<div class="bmsg">Para não interromper, faça o pedido até <b style="color:var(--gold)">${fmtDate(first.pedir)}</b>, já contando o prazo de entrega.</div>`;
+  return `<div class="ptop" style="padding-top:16px"><button class="back press" data-tab="hoje" aria-label="Voltar">${ic("left")}</button><div><h1>Comprar</h1><p>Continue a rotina sem interrupção.</p></div></div>
+  ${o.length?`<div class="bhero">${es.map(e=>`<div class="bprod ${e.urg?"urg":""}">${bottle(e.p.id,50)}<div class="grow"><b>${esc(e.p.nome)}</b><small>${e.futuro?"Começa em "+fmtDate(S.prods[e.p.id].inicio):e.acabou?"Acabou":"≈ "+plural(e.remDays,"dia")+" restante"+(e.remDays>1?"s":"")+" · até "+fmtDate(e.fim)}</small><div class="bar"><i style="width:${e.pct}%"></i></div></div></div>`).join("")}${msg}</div>`
+   :`<div class="card" style="background:var(--soft)"><b>Monte a rotina de ${esc(bebe())}</b><p class="muted" style="margin:4px 0 0">Escolha um kit abaixo. Depois cadastre em Mamãe › Meus produtos para o app avisar quando estiver acabando.</p></div>`}
+  ${CUPOM?`<div class="coupon"><span style="font-size:26px;color:var(--pri)">${ic("gift")}</span><div class="grow"><small>Cupom de cliente ${esc(APP_NAME)}</small><b>${esc(CUPOM)}</b></div><button class="cta sm ghost press" data-copy="${esc(CUPOM)}">Copiar</button></div>`:""}
+  ${o.length?`<div class="sec"><h2>${urg.length?"Repor agora":"Repor seus produtos"}</h2></div>${o.sort((a,b)=>estoque(a.id).remDays-estoque(b.id).remDays).map(p=>prodBuy(p.id,true)).join("")}`:""}
+  <div class="sec"><h2>Kits</h2></div>${KITS.map(kitCard).join("")}
+  ${outros.length?`<div class="sec"><h2>Complete a rotina</h2></div>${outros.map(p=>prodBuy(p.id,false)).join("")}`:""}
+  <div class="card" style="text-align:center"><b>Conhece outra mamãe que precisa?</b><p class="muted small" style="margin:4px 0 12px">Mande o link para ela${INDICACAO.cupom?` com o cupom <b>${esc(INDICACAO.cupom)}</b>`:""}.</p><button class="cta ghost press" data-act="indicar">${ic("share")} Indicar para uma amiga</button></div>
+  <button class="cta sm ghost press" style="margin:0 auto;display:flex" data-act="comprei">${ic("plus")} Já comprei: atualizar meus produtos</button>
+  <p class="trust">Compra segura no site oficial ${esc(MARCA)}. Você será levada ao checkout.</p>`; }
+
+/* ===== primeiro acesso ===== */
+const DORES=[["sono","moon","Sono","Acorda muito ou demora a dormir"],["colica","tummy","Cólica e gases","Choro com barriga dura"],["refluxo","drop","Refluxo","Golfadas e desconforto"],["nariz","wind","Nariz entupido","Resfriado e catarro"],["choro","cry","Choro difícil","Não sei mais o que fazer"],["mae","heart","Meu cansaço","Preciso de uma pausa"]];
+const HORAS=["18:30","19:00","19:30","20:00","20:30","21:00"];
+const NQ=5;
+function obStart(){ OB={step:0,mae:S.mae||"",bebe:S.bebe||"",nasc:S.nasc||"",prods:Object.fromEntries(PRODUTOS.map(p=>[p.id,S.prods[p.id]?.frascos||0])),ini:"hoje",iniData:today(),dores:[...(S.dores||[])],hora:S.hora||"19:30"}; }
+function obValid(){ const o=OB; return o.step===1?o.mae.trim().length>0:o.step===2?(o.bebe.trim().length>0&&!!o.nasc&&o.nasc<=today()):o.step===4?o.dores.length>0:o.step===5?/^\d\d:\d\d$/.test(o.hora):true; }
+function onboarding(){ if(!OB) obStart(); const o=OB, st=o.step, first=primeiro(o.mae), bb=primeiro(o.bebe)||"o bebê";
+  const top=(st>=1&&st<=NQ)?`<div class="ob-top"><button class="ob-back press" data-obback aria-label="Voltar">${ic("left")}</button><div class="ob-prog"><i style="width:${(st-1)/NQ*100}%"></i></div><span class="ob-count">${st}/${NQ}</span></div>`:"";
+  let b="";
+  if(st===0) b=`<div class="applogo" style="margin:6vh auto 24px">${LOGO}</div>
+    <h1 class="ob-title" style="text-align:center">Seu kit ${esc(MARCA)}<br><em>agora tem um app</em></h1>
+    <p class="ob-sub" style="text-align:center">Ritual da noite, sons para dormir, massagens guiadas e um diário do bebê. É grátis.</p>
+    <div class="wfeat"><span>${ic("moon")} Ritual</span><span>${ic("music")} Sons</span><span>${ic("hands")} Massagens</span><span>${ic("diary")} Diário</span></div>
+    <div class="ob-foot"><button class="cta press" data-obnext style="font-size:17px;padding:17px">ABRIR O APP AGORA</button>
+    <p class="ob-sub" style="text-align:center;font-size:13.5px;margin:12px 0 0">Dica: abra pelo celular e toque em “Adicionar à tela inicial”.${isStandalone()?"":` <button class="wlink" data-sheet="instalar">Ver como</button>`}</p></div>`;
+  if(st===1) b=`<div class="applogo small">${LOGO}</div><h1 class="ob-title">Vamos preparar noites mais tranquilas.</h1><p class="ob-sub">Primeiro, como podemos te chamar?</p>
+    <input id="ob-mae" class="inp" type="text" autocomplete="given-name" autocapitalize="words" placeholder="Seu nome" maxlength="24" value="${esc(o.mae)}" enterkeyhint="next">
+    <div class="ob-foot"><button class="cta press" data-obnext ${obValid()?"":"disabled"}>Continuar</button><button class="restore press" data-sheet="backup">Já usa o ${esc(APP_NAME)}? Restaurar meus dados</button></div>`;
+  if(st===2) b=`<h1 class="ob-title">Prazer, ${esc(first)}! E o seu bebê?</h1><p class="ob-sub">Com a data de nascimento, o app ajusta janelas de sono e dicas para cada semana.</p>
+    <label class="l" for="ob-bebe">Nome do bebê</label><input id="ob-bebe" class="inp" type="text" autocapitalize="words" placeholder="Nome do bebê" maxlength="24" value="${esc(o.bebe)}">
+    <label class="l" for="ob-nasc">Data de nascimento</label><input id="ob-nasc" class="inp" type="date" max="${today()}" min="${addDays(today(),-1100)}" value="${esc(o.nasc)}">
+    <div class="ob-foot"><button class="cta press" data-obnext ${obValid()?"":"disabled"}>Continuar</button></div>`;
+  if(st===3){ const any=Object.values(o.prods).some(n=>n>0);
+    b=`<h1 class="ob-title">Quais produtos ${esc(MARCA)} você tem?</h1><p class="ob-sub">Assim o app guia o uso de cada um e avisa antes de acabar.</p>
+    <div class="opts">${PRODUTOS.map(p=>{ const n=o.prods[p.id]; return `<div class="pq ${n?"on":""}">${bottle(p.id,52)}<div class="grow"><b>${esc(p.nome)}</b><small>${p.para==="mae"?"Para você":"Para o bebê"}</small></div><div class="stp"><button class="press" data-pq="${p.id}" data-d="-1" aria-label="Menos">${ic("minus")}</button><span>${n}</span><button class="press" data-pq="${p.id}" data-d="1" aria-label="Mais">${ic("plus")}</button></div></div>`; }).join("")}</div>
+    ${any?`<p class="ob-sub" style="margin-top:18px;font-weight:800">Quando começou (ou vai começar) a usar?</p><div class="segw">${[["hoje","Hoje"],["ontem","Ontem"],["data","Outra data"]].map(([k,l])=>`<button class="press ${o.ini===k?"on":""}" data-ini="${k}">${l}</button>`).join("")}</div>${o.ini==="data"?`<input id="ob-ini" class="inp" type="date" value="${esc(o.iniData)}" style="margin-top:12px">`:""}`:""}
+    <div class="ob-foot"><button class="cta press" data-obnext>${any?"Continuar":"Ainda não tenho, continuar"}</button></div>`; }
+  if(st===4) b=`<h1 class="ob-title">Qual é o maior desafio agora, ${esc(first)}?</h1><p class="ob-sub">Pode escolher mais de um.</p>
+    <div class="opts">${DORES.map(([k,i,t,s])=>`<button class="opt press ${o.dores.includes(k)?"on":""}" data-dor="${k}"><span class="oi">${ic(i)}</span><span>${t}<small>${s}</small></span><span class="ck">${o.dores.includes(k)?ic("check"):""}</span></button>`).join("")}</div>
+    <div class="ob-foot"><button class="cta press" data-obnext ${obValid()?"":"disabled"}>Continuar</button></div>`;
+  if(st===5) b=`<h1 class="ob-title">Que horas começa o ritual da noite?</h1><p class="ob-sub">Um horário fixo ajuda o relógio de ${esc(bb)}. Dá para mudar depois.</p>
+    <div class="optg">${HORAS.map(h=>`<button class="opt press ${o.hora===h?"on":""}" data-hora="${h}">${h}</button>`).join("")}</div>
+    <label class="l" for="ob-hora">Outro horário</label><input id="ob-hora" class="inp" type="time" value="${esc(o.hora)}">
+    <div class="ob-foot"><button class="cta press" data-obnext ${obValid()?"":"disabled"}>Criar a rotina</button></div>`;
+  if(st===6) b=`<div class="applogo" style="margin:8vh auto 26px">${LOGO}</div><h1 class="ob-title" style="text-align:center">Preparando a rotina de ${esc(bb)}</h1>
+    <div class="build">${[`Ritual da noite às ${o.hora}`,`Janelas de sono para ${OB._age||"a idade"}`,o.dores.includes("colica")||o.dores.includes("refluxo")?"Massagens para cólica":"Massagens guiadas","Sons e Modo Noite",Object.values(o.prods).some(n=>n)?"Acompanhamento dos seus produtos":"Guias semana a semana"].map((t,i)=>`<div data-bi="${i}"><span class="bk">${ic("check")}</span>${esc(t)}</div>`).join("")}</div>`;
+  if(st===7){ const op=PRODUTOS.filter(p=>S.prods[p.id]?.frascos>0), j=janela();
+    b=`<div class="applogo small">${LOGO}</div><h1 class="ob-title">${esc(first)}, a rotina de ${esc(bb)} está pronta</h1>
+    <div class="summary">
+     <div class="sr">${ic("moon")}<div><b>Ritual da noite às ${esc(S.hora)}</b><small>7 passos simples, com massagem e som</small></div></div>
+     <div class="sr">${ic("clock")}<div><b>Janela de sono: ${dur(j.min*MIN)} a ${dur(j.max*MIN)}</b><small>Para ${esc(ageTxt())}</small></div></div>
+     ${op.length?op.map(p=>{ const e=estoque(p.id); return `<div class="sr">${bottle(p.id,40)}<div><b>${esc(p.nome)}</b><small>${e.futuro?"Começa em "+fmtDate(S.prods[p.id].inicio):e.acabou?"Pela data, já acabou: avisamos na tela inicial":"Rende até "+fmtDate(e.fim)+" · avisamos antes de acabar"}</small></div></div>`; }).join(""):`<div class="sr">${ic("book")}<div><b>Guias para ${S.dores.map(d=>DORES.find(x=>x[0]===d)?.[2].toLowerCase()).filter(Boolean).slice(0,2).join(" e ")}</b><small>O que fazer, sem palpite</small></div></div>`}
+    </div>
+    <div class="ob-foot"><button class="cta press" data-obfinish>Começar</button></div>`; }
+  return `<div class="ob">${top}<div class="ob-body">${b}</div></div>`; }
+
+function obSaveInputs(){ const g=id=>$("#"+id); if(g("ob-mae")) OB.mae=g("ob-mae").value; if(g("ob-bebe")) OB.bebe=g("ob-bebe").value; if(g("ob-nasc")) OB.nasc=g("ob-nasc").value; if(g("ob-ini")) OB.iniData=g("ob-ini").value||today(); if(g("ob-hora")&&g("ob-hora").value) OB.hora=g("ob-hora").value; }
+function obCommit(){ const o=OB, ini=o.ini==="hoje"?today():o.ini==="ontem"?addDays(today(),-1):(o.iniData||today());
+  S.mae=o.mae.trim(); S.bebe=o.bebe.trim(); S.nasc=o.nasc; S.dores=o.dores; S.hora=o.hora;
+  PRODUTOS.forEach(p=>{ const n=o.prods[p.id]; if(n>0) S.prods[p.id]={frascos:n,inicio:S.prods[p.id]?.inicio||ini}; else delete S.prods[p.id]; });
+  save(); }
+function obNext(){ obSaveInputs(); if(!obValid()) return; if(OB.step===5){ obCommit(); OB._age=ageTxt(); OB.step=6; render(); runBuild(); track("onboarding_build"); return; } OB.step++; render(); focusOb(); if(OB.step===1) track("onboarding_start"); }
+function focusOb(){ setTimeout(()=>{ const i=$(".ob input[type=text]"); if(i&&!i.value) i.focus(); },250); }
+function runBuild(){ const L=$$("[data-bi]"); L.forEach((el,i)=>setTimeout(()=>el.classList.add("on"),350+i*420)); setTimeout(()=>{ OB.step=7; render(); },350+L.length*420+500); }
+function obFinish(){ S.onb=true; save(); OB=null; tab="hoje"; render(true); scrollTo(0,0); track("onboarding_complete",{produtos:owned().map(p=>p.id).join(","),dores:S.dores.join(",")}); syncTags(); setTimeout(maybeAskInstall,900); }
+
+/* ===== ações, players e inicialização ===== */
+const app=$("#app");
+
+/* ---------- render ---------- */
+function render(keepScroll){ const y=scrollY;
+  if(!S.onb){ app.classList.add("noNav"); app.innerHTML=onboarding(); updatePlayer(); return; }
+  app.classList.toggle("noNav",tab==="comprar");
+  const v={hoje,diario,acalmar,guias,mamae,comprar}[tab]||hoje;
+  app.innerHTML=v()+(tab==="comprar"?"":nav());
+  if(keepScroll===true) scrollTo(0,y);
+  updatePlayer(); }
+function go(t,s=null){ tab=t; sub=s; const run=()=>{ render(); scrollTo(0,0); if(s==="semanas") setTimeout(()=>{ const c=$("#semcur"); c&&c.scrollIntoView({block:"center"}); },60); };
+  if(document.startViewTransition&&!reduce){ try{ document.startViewTransition(run); return; }catch(e){} } run(); if(t==="comprar") track("view_comprar"); }
+
+/* ---------- toast ---------- */
+let tt; function toast(m){ const t=$("#toast"); t.innerHTML=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("on"),2400); }
+const vib=n=>{ try{ navigator.vibrate&&navigator.vibrate(n); }catch(e){} };
+
+/* ---------- folha ---------- */
+let sheetOpen=false;
+function openSheet(html){ const s=$("#sheet"); s.innerHTML=`<span class="grab"></span><button class="close press" data-close aria-label="Fechar">${ic("x")}</button>`+html; s.scrollTop=0;
+  $("#scrim").classList.add("on"); s.classList.add("on"); sheetOpen=true; }
+function closeSheet(){ $("#scrim").classList.remove("on"); $("#sheet").classList.remove("on"); sheetOpen=false; }
+
+/* ---------- diário: ações ---------- */
+function addEv(e){ e.id=uid(); S.ev.push(e); if(S.ev.length>4000) S.ev=S.ev.slice(-4000); save(); return e; }
+function startMamada(lado){ const a=S.ativo; if(a.mamada) stopMamada(true); a.mamada={t0:Date.now(),lado}; save(); vib(20); toast("Mamada iniciada"); render(true); track("log_mamada"); }
+function stopMamada(silent){ const a=S.ativo.mamada; if(!a) return; addEv({k:"mamada",t0:a.t0,t1:Date.now(),lado:a.lado}); delete S.ativo.mamada; save(); if(!silent){ toast("Mamada de "+dur(Date.now()-a.t0)+" registrada"); render(true); } }
+function trocarLado(){ const a=S.ativo.mamada; if(!a||a.lado==="M") return; const novo=a.lado==="E"?"D":"E"; stopMamada(true); S.ativo.mamada={t0:Date.now(),lado:novo}; save(); toast("Agora o lado "+(novo==="E"?"esquerdo":"direito")); render(true); }
+function toggleSono(){ const a=S.ativo; if(a.sono){ addEv({k:"sono",t0:a.sono.t0,t1:Date.now()}); const d=Date.now()-a.sono.t0; delete a.sono; save(); toast(`${esc(primeiro(bebe()))} dormiu ${dur(d)}`); }
+  else{ a.sono={t0:Date.now()}; save(); toast("Bons sonhos 🌙"); track("log_sono"); } vib(20); render(true); renderNight(); }
+function toggleColica(){ const a=S.ativo; if(a.colica){ addEv({k:"colica",t0:a.colica.t0,t1:Date.now()}); const d=Date.now()-a.colica.t0; delete a.colica; save(); toast("Registrado: "+dur(d)+" de desconforto"); }
+  else{ a.colica={t0:Date.now()}; save(); toast("Cronômetro iniciado"); track("log_colica");
+    if(!tem("colic")&&P.colic) setTimeout(()=>openSheet(`<div class="sh-h"><h2>Cólica agora?</h2><p>Enquanto o cronômetro corre, tente isto:</p></div><div class="sh-b"><div class="art"><ul><li>Massagem I Love You (guiada no app)</li><li>Bicicletinha e joelhos na barriga</li><li>Colo de tigre e balanço suave</li></ul></div><button class="cta press" style="margin-top:14px" data-go="massagem:colica">${ic("hands")} Fazer a massagem guiada</button></div>${upsCard("colic")}`),600); }
+  vib(20); render(true); }
+function fralda(tipo){ addEv({k:"fralda",t0:Date.now(),tipo}); toast("Fralda registrada"); vib(15); closeSheet(); render(true); }
+function aplicar(id,silent){ addEv({k:"aplic",t0:Date.now(),p:id}); if(!silent){ toast(`Aplicação do ${esc(P[id].nome)} registrada`); render(true); } track("aplicacao",{produto:id}); }
+
+/* ---------- ritual ---------- */
+function toggleRit(id){ const k=nightKey(); const d=S.ritual[k]=S.ritual[k]||[]; const was=ritualOk(k);
+  const i=d.indexOf(id); if(i>=0) d.splice(i,1); else d.push(id);
+  if(!was&&ritualOk(k)){ S.maxSeq=Math.max(S.maxSeq||0,noitesSeguidas()); toast("Ritual completo. Boa noite! 🌙"); vib([30,60,30]); track("ritual_completo",{noites:noitesSeguidas()}); }
+  save(); render(true); }
+function markRit(id){ const k=nightKey(); const d=S.ritual[k]=S.ritual[k]||[]; if(!d.includes(id)){ d.push(id); save(); } }
+
+/* ---------- sons ---------- */
+const AU=new Audio(); AU.loop=true; AU.preload="none";
+const PL={id:null,playing:false,until:0};
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+function playSom(id){ if(PL.id===id&&PL.playing){ stopSom(); return; }
+  const s=SONS.find(x=>x.id===id); if(!s) return;
+  if(PL.id!==id){ AU.src=AUDIO_BASE+id+".mp3"; }
+  AU.volume=S.som.vol; PL.id=id; PL.playing=true; PL.until=S.som.timer?Date.now()+S.som.timer*MIN:0;
+  AU.play().catch(()=>{ PL.playing=false; toast("Toque de novo para tocar o som"); updatePlayer(); });
+  if("mediaSession" in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:s.nome,artist:APP_NAME,artwork:[{src:"icon-512.png",sizes:"512x512",type:"image/png"}]}); navigator.mediaSession.setActionHandler("pause",stopSom); }catch(e){} }
+  track("som_play",{som:id}); refreshSons(); updatePlayer(); renderNight(); }
+function stopSom(){ AU.pause(); PL.playing=false; PL.until=0; AU.volume=S.som.vol; refreshSons(); updatePlayer(); renderNight(); }
+function refreshSons(){ if(S.onb&&tab==="acalmar") render(true); }
+function updatePlayer(){ const el=$("#player"), on=PL.playing&&S.onb; document.body.classList.toggle("hasPlayer",on); if(!on){ el.classList.add("hide"); return; }
+  const s=SONS.find(x=>x.id===PL.id); el.classList.remove("hide");
+  el.innerHTML=`<span class="pi">${ic(s.ic)}</span><div class="grow"><b>${esc(s.nome)}</b><small data-pltime>${PL.until?"desliga em "+clock(PL.until-Date.now()):"tocando sem parar"}</small></div><button class="pb press" data-tab="acalmar" aria-label="Opções">${ic("sliders")}</button><button class="pb press" data-stopsom aria-label="Parar">${ic("stop")}</button>`;
+  el.style.bottom=(tab==="comprar"||!S.onb)?"calc(env(safe-area-inset-bottom,0px) + 12px)":""; }
+function setTimer(t){ S.som.timer=t; save(); if(PL.playing) PL.until=t?Date.now()+t*MIN:0; render(true); toast(t?`O som desliga em ${t} min`:"O som vai tocar sem parar"); }
+
+/* ---------- modo noite ---------- */
+const NM={on:false,red:false}; let wake=null;
+async function lockWake(){ try{ if("wakeLock" in navigator) wake=await navigator.wakeLock.request("screen"); }catch(e){} }
+function openNight(fromRit){ NM.on=true; lockWake(); renderNight(); track("modo_noite"); if(fromRit) markRit("mamada"); }
+function closeNight(){ NM.on=false; try{ wake&&wake.release(); }catch(e){} wake=null; $("#night").innerHTML=""; render(true); }
+function renderNight(){ const n=$("#night"); if(!NM.on){ n.innerHTML=""; return; } const a=S.ativo, now=new Date();
+  const somOn=PL.playing, tm=S.som.timer;
+  n.innerHTML=`<div class="nightm ${NM.red?"red":""}">
+   <div class="clock" data-nclock>${pad2(now.getHours())}:${pad2(now.getMinutes())}</div>
+   <div class="nsub">${a.sono?`${esc(primeiro(bebe()))} dormindo há <span data-since-dur="${a.sono.t0}">${dur(Date.now()-a.sono.t0)}</span>`:a.mamada?"Mamada em andamento":"Modo Noite"}</div>
+   ${a.mamada?`<div class="ntimer" data-since="${a.mamada.t0}">${clock(Date.now()-a.mamada.t0)}</div><div class="nsub">Lado ${a.mamada.lado==="E"?"esquerdo":a.mamada.lado==="D"?"direito":"mamadeira"}</div>`:""}
+   <div class="nfoot">
+    <div class="nrow">${a.mamada?`${a.mamada.lado!=="M"?`<button class="nb press" data-n="trocar"><span>${ic("wave")}</span><span>Trocar lado</span></button>`:""}<button class="nb press" data-n="mam-stop"><span>${ic("check")}</span><span>Terminar mamada</span></button>`
+      :`<button class="nb press" data-n="mamE"><span>${ic("bottle")}</span><span>Mamada E</span></button><button class="nb press" data-n="mamD"><span>${ic("bottle")}</span><span>Mamada D</span></button>`}</div>
+    <div class="nrow"><button class="nb press ${somOn?"on":""}" data-n="som"><span>${ic("wave")}</span><span>${somOn?esc(SONS.find(s=>s.id===PL.id).nome):"Ruído branco"}</span></button>
+     <button class="nb press" data-n="timer"><span>${ic("clock")}</span><span data-ntimer>${somOn&&PL.until?clock(PL.until-Date.now()):tm?tm+" min":"Sem timer"}</span></button>
+     <button class="nb press ${a.sono?"on":""}" data-n="sono"><span>${ic("moon")}</span><span>${a.sono?"Acordou":"Dormiu"}</span></button></div>
+    <div class="nrow"><button class="nb press ${NM.red?"on":""}" data-n="red"><span>${ic("lamp")}</span><span>Luz vermelha</span></button><button class="nb press" data-n="sair"><span>${ic("x")}</span><span>Sair</span></button></div>
+   </div></div>`; }
+function nightAct(k){ if(k==="sair") return closeNight(); if(k==="red"){ NM.red=!NM.red; return renderNight(); }
+  if(k==="mamE"||k==="mamD"){ startMamada(k==="mamE"?"E":"D"); return renderNight(); }
+  if(k==="mam-stop"){ stopMamada(); return renderNight(); } if(k==="trocar"){ trocarLado(); return renderNight(); }
+  if(k==="som"){ PL.playing?stopSom():playSom(PL.id||"ruido-branco"); return; }
+  if(k==="timer"){ const o=[15,30,60,0], i=(o.indexOf(S.som.timer)+1)%o.length; S.som.timer=o[i]; save(); if(PL.playing) PL.until=o[i]?Date.now()+o[i]*MIN:0; return renderNight(); }
+  if(k==="sono"){ toggleSono(); } }
+
+/* ---------- massagem guiada ---------- */
+const RESPIRAR={id:"respirar",titulo:"Respirar 2 minutos",sub:"Pausa guiada",para:"mae",antes:"Sente-se confortável e solte os ombros.",passos:[{t:"Respire comigo",d:"Inspire pelo nariz enquanto o círculo cresce. Solte devagar pela boca enquanto ele diminui.",s:120,respira:true}]};
+let MG=null;
+function openMass(id,fromRit){ const m=id==="respirar"?RESPIRAR:MASSAGENS.find(x=>x.id===id); if(!m) return; closeSheet();
+  MG={m,i:-1,left:0,paused:false,ended:false,fromRit,el:0}; lockWake(); renderMG(); track("massagem_inicio",{massagem:id}); }
+function closeMG(){ MG=null; $("#mg").innerHTML=""; if(!NM.on){ try{ wake&&wake.release(); }catch(e){} } render(true); }
+function mgGo(i){ const L=MG.m.passos.length; if(i>=L){ MG.ended=true; vib([40,80,40]); onMassEnd(); return renderMG(); } MG.i=Math.max(0,i); MG.left=MG.m.passos[MG.i].s; MG.el=0; MG.paused=false; vib(60); renderMG(); }
+function onMassEnd(){ const m=MG.m; if(m.id==="respirar"){ S.resp=(S.resp||[]).concat(today()).slice(-60); }
+  S.massagens=(S.massagens||0)+1; if(MG.fromRit) markRit("massagem"); save(); track("massagem_fim",{massagem:m.id}); }
+function renderMG(){ const box=$("#mg"); if(!MG){ box.innerHTML=""; return; } const m=MG.m, L=m.passos.length;
+  const dots=`<div class="mg-dots">${m.passos.map((_,i)=>`<i class="${i<=MG.i||MG.ended?"on":""}"></i>`).join("")}</div>`;
+  let c="";
+  if(MG.i<0&&!MG.ended){ const p=P[m.produto], secs=m.passos.reduce((s,x)=>s+x.s,0);
+    c=`<div class="mg-c">${p?bottle(p.id,96):`<span style="font-size:56px;color:var(--gold)">${ic("heart")}</span>`}<small style="margin-top:18px">${Math.round(secs/60)} minutos · ${L} passo${L>1?"s":""}</small><h2>${esc(T(m.titulo))}</h2><p>${esc(T(m.antes||""))}</p>
+      ${p&&!tem(p.id)?`<p style="margin-top:14px;font-size:14.5px;opacity:.8">Sem o ${esc(p.nome)}? Dá para fazer só a massagem.</p>`:""}</div>
+      <button class="cta green press" data-mg="start">${ic("play")} Começar</button>`; }
+  else if(MG.ended){ const p=P[m.produto];
+    c=`<div class="mg-c mg-end"><span style="font-size:64px;color:var(--gold)">${ic("star")}</span><h2>Pronto!</h2><p>${m.para==="mae"?"Que bom que você tirou esse tempo para você.":"Agora, luz baixa e colo. Bom descanso para vocês."}</p></div>
+      ${p?(tem(p.id)?`<button class="cta green press" data-mg="aplic">${ic("check")} Registrar aplicação do ${esc(p.nome)}</button><button class="cta ghost press" style="margin-top:10px;background:rgba(255,255,255,.12);color:#fff" data-mg="close">Não usei agora</button>`
+        :`<div class="card" style="margin:0 0 12px;color:var(--ink)"><div class="row">${bottle(p.id,58)}<div class="grow"><b>Complete com o ${esc(p.nome)}</b><div class="muted small">${esc(p.desc)}</div></div></div></div><button class="cta green press" data-mg="buy">Conhecer o ${esc(p.nome)}</button><button class="cta ghost press" style="margin-top:10px;background:rgba(255,255,255,.12);color:#fff" data-mg="close">Fechar</button>`)
+        :`<button class="cta green press" data-mg="close">Concluir</button>`}`; }
+  else { const s=m.passos[MG.i], C=2*Math.PI*86, pr=1-MG.left/s.s;
+    const vis=s.respira?`<div class="breath"><i data-br></i><b data-brt>Inspire</b></div>`:`<div class="mg-ring"><svg viewBox="0 0 190 190"><circle cx="95" cy="95" r="86" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="8"/><circle data-ring cx="95" cy="95" r="86" fill="none" stroke="#FFE2A0" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pr)}"/></svg><b data-left>${clock(MG.left*1000)}</b></div>`;
+    c=`<div class="mg-c"><small>Passo ${MG.i+1} de ${L}</small><h2>${esc(T(s.t))}</h2><p>${esc(T(s.d))}</p>${vis}</div>
+    <div class="mg-ctr"><button class="press" data-mg="prev" aria-label="Voltar passo">${ic("prev")}</button><button class="main press" data-mg="pause" aria-label="${MG.paused?"Continuar":"Pausar"}">${ic(MG.paused?"play":"pause")}</button><button class="press" data-mg="next" aria-label="Próximo passo">${ic("next")}</button></div>`; }
+  box.innerHTML=`<div class="mg"><div class="mg-top"><button class="x press" data-mg="close" aria-label="Fechar">${ic("x")}</button>${dots}</div>${c}</div>`; breathTick(); }
+function breathTick(){ if(!MG||MG.ended||MG.i<0) return; const s=MG.m.passos[MG.i]; if(!s.respira) return;
+  const ph=MG.el%10, el=$("[data-br]"), t=$("[data-brt]"); if(!el) return; const inh=ph<4;
+  el.classList.toggle("in",inh); el.classList.toggle("out",!inh); t.textContent=MG.paused?"Pausado":inh?"Inspire":"Solte devagar"; }
+function mgTick(){ if(!MG||MG.ended||MG.i<0||MG.paused) return; MG.left--; MG.el++;
+  if(MG.left<=0) return mgGo(MG.i+1);
+  const s=MG.m.passos[MG.i], C=2*Math.PI*86, r=$("[data-ring]"), l=$("[data-left]");
+  if(r) r.setAttribute("stroke-dashoffset",C*(MG.left/s.s)); if(l) l.textContent=clock(MG.left*1000); breathTick(); }
+function mgAct(k){ if(k==="close") return closeMG(); if(k==="start") return mgGo(0); if(k==="next") return mgGo(MG.i+1); if(k==="prev") return mgGo(Math.max(0,MG.i-1));
+  if(k==="pause"){ MG.paused=!MG.paused; return renderMG(); }
+  if(k==="aplic"){ aplicar(MG.m.produto,true); toast(`Aplicação do ${esc(P[MG.m.produto].nome)} registrada`); return closeMG(); }
+  if(k==="buy"){ const id=MG.m.produto; closeMG(); buyOne(id); } }
+
+/* ---------- compra ---------- */
+function buyOne(id){ const p=P[id]; if(!p) return;
+  openSheet(`<div class="sh-h"><h2>${esc(p.nome)}</h2><p>${esc(p.desc)}</p></div><div class="sh-b"><div class="row" style="align-items:flex-start;gap:16px;margin:8px 0 4px">${bottle(id,96)}<div class="grow"><b>Como usar</b><p class="muted" style="margin:3px 0 0">${esc(p.modo)}</p><p class="small muted" style="margin:8px 0 0">Frasco roll-on de ${p.ml} ml.</p></div></div></div>${prodBuy(id,false)}
+  ${KITS.filter(k=>k.itens[id]).slice(0,1).map(kitCard).join("")}`); track("view_produto",{produto:id}); }
+
+/* ---------- folhas ---------- */
+const sh=(t,p,b)=>`<div class="sh-h"><h2>${t}</h2>${p?`<p>${p}</p>`:""}</div><div class="sh-b">${b}</div>`;
+function sheetMamada(){ if(S.ativo.mamada) return openSheet(sh("Mamada em andamento",`Lado ${S.ativo.mamada.lado==="E"?"esquerdo":S.ativo.mamada.lado==="D"?"direito":"mamadeira"} · <span data-since="${S.ativo.mamada.t0}">${clock(Date.now()-S.ativo.mamada.t0)}</span>`,`<div class="btns">${S.ativo.mamada.lado!=="M"?`<button class="tb press" data-act="trocar" data-closeafter>Trocar lado</button>`:""}<button class="tb stop press" data-act="mam-stop" data-closeafter>Terminar</button></div>`));
+  const nx=proxLado(), nl=nx==="E"?"D":nx==="D"?"E":null;
+  openSheet(sh("Iniciar mamada",nl?`Comece pelo <b>${nl==="E"?"esquerdo":"direito"}</b> (a última terminou no ${nx==="E"?"esquerdo":"direito"}).`:"Escolha o lado para iniciar o cronômetro.",`<div class="btns"><button class="tb ${nl==="E"?"on":""} press" data-mam="E" data-closeafter>Esquerdo</button><button class="tb ${nl==="D"?"on":""} press" data-mam="D" data-closeafter>Direito</button></div><div class="btns"><button class="tb alt press" data-mam="M" data-closeafter>Mamadeira</button></div>`)); }
+function sheetFralda(){ openSheet(sh("Fralda","Registrar a troca de agora.",`<div class="btns"><button class="tb press" data-fra="xixi">Xixi</button><button class="tb press" data-fra="coco">Cocô</button><button class="tb press" data-fra="ambos">Os dois</button></div>`)); }
+function dtLocal(t){ const d=new Date(t); return iso(d)+"T"+pad2(d.getHours())+":"+pad2(d.getMinutes()); }
+function sheetAdd(k="mamada"){ const n=Date.now();
+  openSheet(sh("Adicionar registro","Esqueceu de marcar na hora? Coloque aqui.",`
+  <div class="field"><label>Tipo</label><div class="tchips">${[["mamada","Mamada"],["sono","Sono"],["fralda","Fralda"],["colica","Cólica"]].map(([v,l])=>`<button class="tchip ${k===v?"on":""}" data-addk="${v}">${l}</button>`).join("")}</div></div>
+  <div class="field"><label for="ad-i">${k==="fralda"?"Horário":"Começou"}</label><input id="ad-i" class="inp" type="datetime-local" value="${dtLocal(n-(k==="sono"?60:20)*MIN)}" max="${dtLocal(n)}"></div>
+  ${k!=="fralda"?`<div class="field"><label for="ad-f">Terminou</label><input id="ad-f" class="inp" type="datetime-local" value="${dtLocal(n)}" max="${dtLocal(n)}"></div>`:""}
+  ${k==="mamada"?`<div class="field"><label>Lado</label><div class="tchips" data-grp="lado">${[["E","Esquerdo"],["D","Direito"],["M","Mamadeira"]].map(([v,l],i)=>`<button class="tchip ${i===0?"on":""}" data-pick="${v}">${l}</button>`).join("")}</div></div>`:""}
+  ${k==="fralda"?`<div class="field"><label>Tipo</label><div class="tchips" data-grp="tipo">${[["xixi","Xixi"],["coco","Cocô"],["ambos","Os dois"]].map(([v,l],i)=>`<button class="tchip ${i===0?"on":""}" data-pick="${v}">${l}</button>`).join("")}</div></div>`:""}
+  <button class="cta press" data-addsave="${k}" style="margin-top:8px">Salvar</button>`)); }
+function addSave(k){ const i=new Date($("#ad-i").value).getTime(), f=$("#ad-f")?new Date($("#ad-f").value).getTime():null;
+  if(!i||isNaN(i)) return toast("Confira o horário"); if(f!==null&&(isNaN(f)||f<=i)) return toast("O fim precisa ser depois do início");
+  if(f&&f-i>14*3600e3) return toast("Duração muito longa. Confira os horários");
+  const pick=g=>$(`[data-grp="${g}"] .on`)?.dataset.pick; const e={k,t0:i}; if(f) e.t1=f; if(k==="mamada") e.lado=pick("lado"); if(k==="fralda") e.tipo=pick("tipo");
+  addEv(e); closeSheet(); toast("Registro adicionado"); render(true); }
+function sheetDel(id){ const e=S.ev.find(x=>x.id===id); if(!e) return; const [t]=evTxt(e);
+  openSheet(sh("Apagar registro?",`${esc(t)} às ${hm(e.t0)}`,`<div class="btns"><button class="tb press" data-close>Cancelar</button><button class="tb stop press" data-delok="${id}">Apagar</button></div>`)); }
+function sheetChoro(){ openSheet(sh("Vamos por partes","Respire fundo. Confira um item de cada vez.",`
+  <div class="art"><ul>${CHECK_CHORO.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  <h3 style="font-size:17px;font-weight:900;margin:18px 0 6px">Os 5 S</h3>${CINCO_S.map((s,i)=>`<div class="phone"><span class="n">${i+1}</span><div><b>${esc(s.t)}</b><p class="muted small">${esc(s.d)}</p></div></div>`).join("")}
+  <div class="btns" style="margin-top:12px"><button class="tb on press" data-som="shhh">${ic("shh")} Som Shhh</button><button class="tb press" data-som="utero">${ic("heart")} Útero</button></div>
+  <button class="cta ghost press" style="margin-top:10px" data-go="massagem:colica">${ic("hands")} Massagem para cólica</button>
+  <div class="card care" style="margin:14px 0 0"><b>Se você estiver no limite</b><p class="muted small" style="margin:4px 0 0">Coloque o bebê seguro no berço, de barriga para cima, e saia do quarto por alguns minutos. Nunca chacoalhe o bebê. Choro diferente do normal, febre ou outros sinais: <button class="link" data-sub="alertas" data-tabto="guias">veja os alertas</button>.</p></div>`)); }
+function stepper(id,n){ return `<div class="stp" style="gap:8px"><button class="press" data-ps="${id}" data-d="-1" style="background:var(--soft);color:var(--prid)">${ic("minus")}</button><span data-psn="${id}">${n}</span><button class="press" data-ps="${id}" data-d="1" style="background:var(--soft);color:var(--prid)">${ic("plus")}</button></div>`; }
+function sheetProdutos(){ openSheet(sh("Meus produtos","Comprou mais? Aumente a quantidade. A data de início continua a mesma.",
+  PRODUTOS.map(p=>{ const s=S.prods[p.id]; return `<div class="card flat" style="margin:10px 0;padding:12px"><div class="row">${bottle(p.id,52)}<div class="grow"><b>${esc(p.nome)}</b><div class="muted small">frascos</div></div>${stepper(p.id,s?.frascos||0)}</div>
+  <div class="field" style="margin:10px 0 0"><label for="pi-${p.id}" class="small">Começou a usar em</label><input id="pi-${p.id}" class="inp" type="date" value="${esc(s?.inicio||today())}" style="padding:10px 12px"></div></div>`; }).join("")+`<button class="cta press" data-prodsave style="margin-top:6px">Salvar</button>`)); }
+function prodSave(){ PRODUTOS.forEach(p=>{ const n=+$(`[data-psn="${p.id}"]`).textContent, d=$("#pi-"+p.id).value||today(); if(n>0){ const old=S.prods[p.id]; S.prods[p.id]={frascos:n,inicio:d}; if(old&&n>old.frascos) track("recompra_registrada",{produto:p.id,de:old.frascos,para:n}); } else delete S.prods[p.id]; });
+  save(); closeSheet(); toast("Produtos atualizados"); render(true); syncTags(); }
+function sheetDados(){ openSheet(sh("Dados e ritual","",`
+  <div class="field"><label for="dd-m">Seu nome</label><input id="dd-m" class="inp" value="${esc(S.mae)}" maxlength="24"></div>
+  <div class="field"><label for="dd-b">Nome do bebê</label><input id="dd-b" class="inp" value="${esc(S.bebe)}" maxlength="24"></div>
+  <div class="field"><label for="dd-n">Nascimento</label><input id="dd-n" class="inp" type="date" max="${today()}" value="${esc(S.nasc)}"></div>
+  <div class="field"><label for="dd-h">Horário do ritual da noite</label><input id="dd-h" class="inp" type="time" value="${esc(S.hora)}"></div>
+  <div class="field"><label>Desafios</label><div class="tchips">${DORES.map(([k,,t])=>`<button class="tchip ${S.dores.includes(k)?"on":""}" data-ddor="${k}">${t}</button>`).join("")}</div></div>
+  <button class="cta press" data-dadossave>Salvar</button>`)); }
+function dadosSave(){ const m=$("#dd-m").value.trim(), b=$("#dd-b").value.trim(), n=$("#dd-n").value, h=$("#dd-h").value;
+  if(!m||!b||!n) return toast("Preencha nome, bebê e nascimento"); S.mae=m; S.bebe=b; S.nasc=n; if(h) S.hora=h;
+  S.dores=$$("[data-ddor].on").map(x=>x.dataset.ddor); save(); closeSheet(); toast("Dados salvos"); render(true); syncTags(); }
+function sheetBackup(){ const code=btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  openSheet(sh("Salvar ou restaurar","Seus dados ficam só neste celular. Para trocar de aparelho, copie o código e cole no novo.",`
+  ${S.onb?`<div class="field"><label>Seu código</label><textarea class="inp" readonly id="bk-out">${code}</textarea></div><button class="cta ghost press" data-copy-from="bk-out">${ic("copy")} Copiar código</button>`:""}
+  <div class="field" style="margin-top:22px"><label for="bk-in">Restaurar de outro celular</label><textarea class="inp" id="bk-in" placeholder="Cole aqui o código"></textarea></div><button class="cta press" data-restore>${ic("upload")} Restaurar</button>`)); }
+function restore(){ try{ const o=JSON.parse(decodeURIComponent(escape(atob($("#bk-in").value.trim())))); if(!o||typeof o!=="object"||!("ev" in o)) throw 0; S=Object.assign(blank(),o); S.onb=true; save(); closeSheet(); OB=null; tab="hoje"; render(); toast("Dados restaurados"); }catch(e){ toast("Código inválido. Confira e tente de novo"); } }
+function sheetApagar(){ openSheet(sh("Apagar tudo?","Todos os registros, produtos e configurações deste celular serão apagados. Não dá para desfazer.",`<div class="btns"><button class="tb press" data-close>Cancelar</button><button class="tb stop press" data-wipe>Apagar tudo</button></div>`)); }
+function sheetInstalar(){ const a=/android/i.test(navigator.userAgent);
+  openSheet(sh("Adicione à tela inicial","Assim o "+esc(APP_NAME)+" abre como um app, em tela cheia, e funciona até sem internet.",
+  (deferredPrompt?`<button class="cta green press" data-install>${ic("addhome")} Instalar agora</button><p class="muted small" style="text-align:center">ou siga os passos:</p>`:"")+
+  (isIOS||!a?`<b>No iPhone (Safari)</b><div class="phone"><span class="n">1</span><p>Toque no botão <b>Compartilhar</b> (quadrado com a seta para cima), na barra de baixo.</p></div><div class="phone"><span class="n">2</span><p>Role e toque em <b>Adicionar à Tela de Início</b>.</p></div><div class="phone"><span class="n">3</span><p>Toque em <b>Adicionar</b>. Pronto: o ícone da lua aparece junto dos seus apps.</p></div>`:"")+
+  (!isIOS?`<b style="display:block;margin-top:14px">No Android (Chrome)</b><div class="phone"><span class="n">1</span><p>Toque nos <b>três pontinhos</b> no canto de cima.</p></div><div class="phone"><span class="n">2</span><p>Toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</p></div><div class="phone"><span class="n">3</span><p>Confirme. O ícone aparece na tela do celular.</p></div>`:""))); S.askedInstall=true; save(); }
+function sheetLembretes(){ const L=S.lemb;
+  openSheet(sh("Lembretes","Escolha o que você quer receber no celular.",`
+  ${[["ritual","Ritual da noite","Aviso no horário do ritual ("+esc(S.hora)+")"],["recompra","Produto acabando","Antes do frasco acabar, para não interromper"],["dicas","Dicas da semana","O que esperar na fase de "+esc(bebe())]].map(([k,t,s])=>`<button class="opt press" style="background:#fff;color:var(--ink);border-color:var(--line);margin-bottom:8px" data-lemb="${k}"><span class="oi" style="background:var(--soft);color:var(--pri)">${ic(k==="ritual"?"moon":k==="recompra"?"bag":"sparkle")}</span><span>${t}<small style="opacity:.7">${s}</small></span><span class="ck" style="${L[k]?"background:var(--pri);border-color:var(--pri);color:#fff":"border-color:var(--line)"}">${L[k]?ic("check"):""}</span></button>`).join("")}
+  <button class="cta press" data-notif style="margin-top:10px">${ic("bell")} ${S.notif?"Salvar":"Ativar lembretes"}</button>`)); }
+
+/* check-in semanal */
+let CK=null;
+function weekStats(off){ const days=[...Array(7)].map((_,i)=>addDays(today(),i-7-off)), avg=a=>a.reduce((s,x)=>s+x,0)/7;
+  return {sono:avg(days.map(sonoDia)),mam:avg(days.map(d=>evDia(d,"mamada").length)),col:avg(days.map(colicaDia)),rit:days.filter(ritualOk).length,apl:days.reduce((s,d)=>s+evDia(d,"aplic").length,0)}; }
+function sheetCheckin(force){ const last=S.checkins[S.checkins.length-1];
+  if(!force&&last&&daysBetween(last.d,today())<7) return openSheet(sh("Último check-in",fmtDate(last.d),ckReport(last)+`<button class="cta ghost press" data-ckforce style="margin-top:14px">Fazer um novo agora</button>`));
+  CK={step:0,a:{}}; ckRender(); }
+function ckRender(){ const Q=[["noites","Como foram as noites nesta semana?",[["1","Muito difíceis"],["2","Difíceis"],["3","Normais"],["4","Boas"],["5","Ótimas"]]],
+  ["colica","E as cólicas e o choro?",[["menos","Diminuíram"],["igual","Iguais"],["mais","Aumentaram"],["nao","Não teve"]]],
+  ["mae","E você, como está?",MOODS.map(([e,l],i)=>[String(i+1),e+" "+l])]];
+  if(CK.step>=Q.length){ const w=weekStats(0), r={d:today(),...CK.a,sono:w.sono,col:w.col,rit:w.rit,apl:w.apl}; S.checkins.push(r); save(); track("checkin"); render(true); return openSheet(sh("Sua semana",fmtDate(r.d),ckReport(r))); }
+  const [k,t,o]=Q[CK.step]; openSheet(sh(t,`Check-in semanal · ${CK.step+1} de ${Q.length}`,`<div class="col" style="gap:8px;margin-top:6px">${o.map(([v,l])=>`<button class="opt press" style="background:#fff;color:var(--ink);border-color:var(--line)" data-ck="${k}" data-v="${v}">${esc(l)}</button>`).join("")}</div>`)); }
+function ckReport(r){ const prev=S.checkins[S.checkins.indexOf(r)-1], w0=weekStats(7);
+  const lines=[];
+  lines.push(`<li><b>${r.rit} de 7</b> noites com ritual completo.</li>`);
+  if(r.sono) lines.push(`<li>Sono médio registrado: <b>${dur(r.sono)}</b> por dia${w0.sono?` (semana anterior: ${dur(w0.sono)})`:""}.</li>`);
+  if(r.col||w0.col) lines.push(`<li>Cólica: <b>${Math.round(r.col/MIN)} min</b> por dia${w0.col?` (antes: ${Math.round(w0.col/MIN)} min)`:""}.</li>`);
+  if(r.apl) lines.push(`<li><b>${r.apl}</b> aplicações dos produtos registradas.</li>`);
+  if(prev&&r.noites&&prev.noites) lines.push(`<li>Você avaliou as noites como <b>${r.noites>prev.noites?"melhores":r.noites<prev.noites?"mais difíceis":"iguais"}</b> à semana passada.</li>`);
+  const next=r.noites<=2?"Para a próxima semana: tente o ritual completo todas as noites, no mesmo horário. A repetição é o que faz efeito."
+    :r.colica==="mais"?"Para a próxima semana: massagem para cólica 30 a 45 min depois das mamadas da tarde, quando o choro costuma piorar."
+    :"Para a próxima semana: mantenha o ritual e o mesmo som. Está funcionando.";
+  const low=owned().map(p=>estoque(p.id)).filter(e=>e&&e.remDays<=14);
+  return `<div class="art"><ul>${lines.join("")}</ul></div><div class="card" style="margin:14px 0 0;background:var(--soft)"><b>${esc(next)}</b></div>
+  ${+r.mae<=2?`<div class="card care" style="margin:12px 0 0"><b>Cuide de você também</b><p class="muted small" style="margin:4px 0 0">Peça ajuda para dividir as noites e, se a tristeza continuar, converse com seu médico. CVV: <a class="link" href="tel:188">188</a>.</p></div>`:""}
+  ${low.length?`<div class="card" style="margin:12px 0 0;border:1.5px solid #F6C58F;background:#FFF8EE"><b>${low.map(e=>esc(e.p.nome)).join(" e ")} ${low.length>1?"acabam":"acaba"} em breve</b><p class="muted small" style="margin:4px 0 10px">Para não interromper a rotina na próxima semana.</p><button class="cta sm press" data-tab="comprar" data-closeafter>Ver opções</button></div>`:""}`; }
+function sheetRelatorio(){ const w=weekStats(0), days=[...Array(7)].map((_,i)=>addDays(today(),i-7)), fr=days.reduce((s,d)=>s+evDia(d,"fralda").filter(e=>e.tipo!=="coco").length,0)/7;
+  const txt=`Resumo de ${S.bebe||"bebê"} (${ageTxt()}) – últimos 7 dias\n• Sono registrado: ${dur(w.sono)} por dia em média\n• Mamadas: ${w.mam.toFixed(1).replace(".",",")} por dia\n• Fraldas molhadas: ${fr.toFixed(1).replace(".",",")} por dia\n• Cólica/choro: ${Math.round(w.col/MIN)} min por dia\n(registrado no app ${APP_NAME})`;
+  openSheet(sh("Resumo para o pediatra","Leve para a consulta ou envie por mensagem.",`<textarea class="inp" id="rel" readonly style="font-family:var(--f);font-size:15px;min-height:170px">${esc(txt)}</textarea><div class="btns"><button class="tb press" data-copy-from="rel">${ic("copy")} Copiar</button>${navigator.share?`<button class="tb on press" data-sharetxt="rel">${ic("share")} Enviar</button>`:""}</div>`)); }
+
+/* ---------- instalar ---------- */
+let deferredPrompt=null;
+addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; });
+function isStandalone(){ return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true; }
+function maybeAskInstall(){ if(isStandalone()||S.askedInstall) return; sheetInstalar(); }
+
+/* ---------- métricas e lembretes ---------- */
+function track(ev,params={}){ try{ if(GA4_ID&&window.gtag) gtag("event",ev,params); if(META_PIXEL_ID&&window.fbq){ if(ev==="buy_click") fbq("track","InitiateCheckout",{value:params.value,currency:"BRL",content_name:params.item}); else fbq("trackCustom",ev,params); } }catch(e){} }
+function loadTrackers(){ if(GA4_ID){ const s=document.createElement("script"); s.async=true; s.src="https://www.googletagmanager.com/gtag/js?id="+GA4_ID; document.head.appendChild(s); window.dataLayer=window.dataLayer||[]; window.gtag=function(){dataLayer.push(arguments);}; gtag("js",new Date()); gtag("config",GA4_ID); }
+  if(META_PIXEL_ID){ !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js"); fbq("init",META_PIXEL_ID); fbq("track","PageView"); }
+  if(ONESIGNAL_APP_ID){ window.OneSignalDeferred=window.OneSignalDeferred||[]; const s=document.createElement("script"); s.defer=true; s.src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"; document.head.appendChild(s);
+    OneSignalDeferred.push(async OS=>{ try{ await OS.init({appId:ONESIGNAL_APP_ID,allowLocalhostAsSecureOrigin:true}); syncTags(); }catch(e){} }); } }
+function syncTags(){ if(!ONESIGNAL_APP_ID||!window.OneSignalDeferred) return; const es=owned().map(p=>estoque(p.id)).filter(Boolean);
+  const tags={nome:primeiro(S.mae),bebe:primeiro(S.bebe),semanas:String(ageWeeks()),ritual_hora:S.hora,produtos:owned().map(p=>p.id).join(","),
+    dias_restantes:String(es.length?Math.min(...es.map(e=>e.remDays)):-1),lemb_ritual:S.lemb.ritual?"1":"0",lemb_recompra:S.lemb.recompra?"1":"0",lemb_dicas:S.lemb.dicas?"1":"0"};
+  OneSignalDeferred.push(async OS=>{ try{ OS.User.addTags(tags); }catch(e){} }); }
+function enableNotif(){ if(!ONESIGNAL_APP_ID) return; OneSignalDeferred.push(async OS=>{ try{ await OS.Notifications.requestPermission(); S.notif=!!OS.Notifications.permission; save(); syncTags(); toast(S.notif?"Lembretes ativados":"Permissão não concedida"); }catch(e){ toast("Não foi possível ativar agora"); } }); closeSheet(); }
+
+/* ---------- eventos ---------- */
+document.addEventListener("click",e=>{ const t=e.target.closest("button,a,[data-go]"); if(!t) return; const d=t.dataset;
+  if(t.closest("#night")&&d.n) return nightAct(d.n);
+  if(d.mg) return mgAct(d.mg);
+  if("close" in d) return closeSheet();
+  if(d.tab){ if(d.sub===undefined) sub=null; closeSheet(); if(d.tab===tab&&!sub){ scrollTo({top:0,behavior:"smooth"}); render(true); return; } return go(d.tab); }
+  if(d.sub){ const to=d.tabto||(["semanas","metodo","alertas"].includes(d.sub)||d.sub.startsWith("g:")?"guias":tab); closeSheet(); return go(to,d.sub); }
+  if("back" in d){ sub=null; return go(tab); }
+  if(d.goto) return go(d.goto);
+  if(d.go){ e.stopPropagation(); const [a,b]=d.go.split(":");
+    if(a==="massagem") return openMass(b,!!t.closest("[data-rit]")||(b==="sono"&&tab==="hoje"));
+    if(a==="respirar") return openMass("respirar"); if(a==="noite"){ closeSheet(); return openNight(!!t.closest("[data-rit]")); } if(a==="sons"){ markRit("som"); return go("acalmar"); } return; }
+  if(d.rit) return toggleRit(d.rit);
+  if(d.act){ const a=d.act; if("closeafter" in d) closeSheet();
+    if(a==="sono") return toggleSono(); if(a==="colica") return toggleColica(); if(a==="q-mamada") return sheetMamada(); if(a==="q-fralda") return sheetFralda();
+    if(a==="mam-stop") return stopMamada(); if(a==="trocar") return trocarLado(); if(a==="noite") return openNight();
+    if(a==="acordou-ha") return openSheet(sh("Acordou há quanto tempo?","",`<div class="tchips">${[5,15,30,45,60,90].map(m=>`<button class="tchip press" data-acordou="${m}">${m} min</button>`).join("")}</div>`));
+    if(a==="indicar"){ const url=withUtm(INDICACAO.url,"indicacao"), text=`Estou usando os produtos ${MARCA} no ritual da noite do meu bebê. Olha aqui:`+(INDICACAO.cupom?` (cupom ${INDICACAO.cupom})`:"");
+      track("indicar"); if(navigator.share) navigator.share({title:MARCA,text,url}).catch(()=>{}); else copyTxt(text+" "+url); return; }
+    if(a==="comprei") return sheetProdutos(); }
+  if(d.acordou){ S.acordou=Date.now()-(+d.acordou)*MIN; save(); closeSheet(); toast("Anotado"); return render(true); }
+  if(d.mam){ if("closeafter" in d) closeSheet(); return startMamada(d.mam); }
+  if(d.fra) return fralda(d.fra);
+  if(d.apl) return aplicar(d.apl);
+  if(d.del) return sheetDel(d.del);
+  if(d.delok){ S.ev=S.ev.filter(x=>x.id!==d.delok); save(); closeSheet(); toast("Registro apagado"); return render(true); }
+  if(d.dseg){ dseg=d.dseg; return render(true); }
+  if(d.sheet){ const m={add:sheetAdd,choro:sheetChoro,produtos:sheetProdutos,dados:sheetDados,backup:sheetBackup,apagar:sheetApagar,instalar:sheetInstalar,lembretes:sheetLembretes,checkin:()=>sheetCheckin(false),relatorio:sheetRelatorio}[d.sheet]; return m&&m(); }
+  if(d.addk) return sheetAdd(d.addk);
+  if(d.pick){ $$(".tchip",t.parentNode).forEach(x=>x.classList.toggle("on",x===t)); return; }
+  if(d.addsave) return addSave(d.addsave);
+  if(d.ps){ const s=$(`[data-psn="${d.ps}"]`); s.textContent=Math.max(0,Math.min(9,+s.textContent+(+d.d))); return; }
+  if("prodsave" in d) return prodSave();
+  if(d.ddor){ t.classList.toggle("on"); return; }
+  if("dadossave" in d) return dadosSave();
+  if(d.lemb){ S.lemb[d.lemb]=!S.lemb[d.lemb]; save(); return sheetLembretes(); }
+  if("notif" in d) return enableNotif();
+  if("restore" in d) return restore();
+  if("wipe" in d){ try{ localStorage.removeItem(KEY); }catch(x){} stopSom(); load(); OB=null; tab="hoje"; closeSheet(); render(); return; }
+  if("install" in d){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.finally(()=>{ deferredPrompt=null; closeSheet(); }); } return; }
+  if(d.copy) return copyTxt(d.copy);
+  if(d.copyFrom) return copyTxt($("#"+d.copyFrom).value);
+  if(d.sharetxt){ navigator.share({text:$("#"+d.sharetxt).value}).catch(()=>{}); return; }
+  if(d.ck){ CK.a[d.ck]=d.v; CK.step++; return ckRender(); }
+  if("ckforce" in d) return sheetCheckin(true);
+  if(d.mood){ S.humor[today()]=+d.mood; save(); toast(+d.mood<=2?"Obrigada por contar. Pegue leve com você hoje 💜":"Anotado 💜"); return render(true); }
+  if(d.timer!==undefined) return setTimer(+d.timer);
+  if(d.som) return playSom(d.som);
+  if("stopsom" in d) return stopSom();
+  if(d.buyone) return buyOne(d.buyone);
+  if(d.buy){ track("buy_click",{item:d.buy,value:+d.price}); return; }
+  if(d.track) track(d.track);
+  /* onboarding */
+  if("obnext" in d) return obNext();
+  if("obback" in d){ obSaveInputs(); OB.step=Math.max(0,OB.step-1); return render(); }
+  if("obfinish" in d) return obFinish();
+  if(d.pq){ obSaveInputs(); OB.prods[d.pq]=Math.max(0,Math.min(9,OB.prods[d.pq]+(+d.d))); return render(); }
+  if(d.ini){ obSaveInputs(); OB.ini=d.ini; return render(); }
+  if(d.dor){ const i=OB.dores.indexOf(d.dor); i>=0?OB.dores.splice(i,1):OB.dores.push(d.dor); return render(); }
+  if(d.hora){ OB.hora=d.hora; return render(); }
+});
+document.addEventListener("input",e=>{ const t=e.target;
+  if(t.matches("[data-vol]")){ S.som.vol=+t.value; AU.volume=S.som.vol; save(); }
+  if(t.closest(".ob")){ obSaveInputs(); const b=$(".ob [data-obnext]"); if(b) b.disabled=!obValid(); if(t.id==="ob-hora"&&t.value){ $$(".optg .opt").forEach(x=>x.classList.toggle("on",x.dataset.hora===t.value)); } } });
+document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.closest(".ob")&&e.target.matches("input")){ e.preventDefault(); obNext(); } if(e.key==="Escape"){ if(sheetOpen) closeSheet(); } });
+$("#scrim").addEventListener("click",closeSheet);
+function copyTxt(s){ (navigator.clipboard?navigator.clipboard.writeText(s):Promise.reject()).then(()=>toast("Copiado")).catch(()=>{ const a=document.createElement("textarea"); a.value=s; document.body.appendChild(a); a.select(); try{ document.execCommand("copy"); toast("Copiado"); }catch(x){} a.remove(); }); }
+
+/* ---------- relógio ---------- */
+let lastMin=new Date().getMinutes();
+setInterval(()=>{ const now=Date.now();
+  $$("[data-since]").forEach(el=>el.textContent=clock(now-(+el.dataset.since)));
+  $$("[data-since-dur]").forEach(el=>el.textContent=dur(now-(+el.dataset.sinceDur)));
+  if(PL.playing&&PL.until){ const left=PL.until-now;
+    if(left<=0) stopSom(); else { if(left<10000&&!isIOS) AU.volume=Math.max(0,S.som.vol*left/10000);
+      const p=$("[data-pltime]"); if(p) p.textContent="desliga em "+clock(left); const n=$("[data-ntimer]"); if(n) n.textContent=clock(left); } }
+  if(NM.on){ const c=$("[data-nclock]"), d=new Date(); if(c) c.textContent=pad2(d.getHours())+":"+pad2(d.getMinutes()); }
+  mgTick();
+  const m=new Date().getMinutes(); if(m!==lastMin){ lastMin=m; if(S.onb&&!sheetOpen&&!MG&&!NM.on&&tab==="hoje"&&!document.activeElement?.matches("input,textarea")) render(true); }
+},1000);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"){ if(NM.on||MG) lockWake(); if(S.onb&&!sheetOpen&&!MG) render(true); } });
+AU.addEventListener("pause",()=>{ if(PL.playing&&!AU.ended&&document.visibilityState==="visible"&&AU.paused){ /* pausado pelo sistema */ } });
+
+/* ---------- rotas (links de notificação) ---------- */
+function route(){ const h=(location.hash||"").replace("#",""); if(!h||!S.onb) return;
+  const map={hoje:["hoje"],diario:["diario"],acalmar:["acalmar"],guias:["guias"],mamae:["mamae"],comprar:["comprar"],semana:["guias","semanas"],alertas:["guias","alertas"]};
+  if(map[h]){ go(map[h][0],map[h][1]||null); }
+  else if(h==="noite") openNight(); else if(h.startsWith("massagem-")) openMass(h.slice(9)); else if(h==="checkin") sheetCheckin(false); else if(h==="respirar") openMass("respirar");
+  try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){} }
+addEventListener("hashchange",route);
+
+/* ---------- início ---------- */
+load(); render(); loadTrackers(); route(); track("app_open",{standalone:isStandalone()?"1":"0"});
+if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)&&!/^(localhost|127\.)/.test(location.hostname)) addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+
+</script>
+</body>
+</html>
